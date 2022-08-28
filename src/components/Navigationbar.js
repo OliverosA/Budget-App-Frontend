@@ -3,6 +3,7 @@ import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import logo from '../assets/budgetLogo.png';
 import NavigationItem from './NavigationItem';
+import SideBar from './SideBar';
 
 const Navigationbar = ({ isLoggedIn, userName }) => {
   return (
@@ -22,6 +23,7 @@ const Navigationbar = ({ isLoggedIn, userName }) => {
           <NavigationItem isLoggedIn={isLoggedIn} />
         </Container>
       </Navbar>
+      {isLoggedIn ? <SideBar /> : ''}
     </>
   );
 };

@@ -4,6 +4,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Stack from 'react-bootstrap/Stack';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Btn from './Btn';
+import { Link, Outlet } from 'react-router-dom';
 
 const NavigationItem = ({ isLoggedIn, userName }) => {
   return (
@@ -11,9 +12,15 @@ const NavigationItem = ({ isLoggedIn, userName }) => {
       {isLoggedIn ? (
         <>
           <Nav className='me-auto'>
-            <Nav.Link href='#AddAccount'>Add Account</Nav.Link>
-            <Nav.Link href='#Movements'>Exp/Inc</Nav.Link>
-            <Nav.Link href='#Transfer'>Transfer</Nav.Link>
+            <Nav.Link as={Link} to='/history'>
+              History
+            </Nav.Link>
+            <Nav.Link as={Link} to='/summary'>
+              Summary
+            </Nav.Link>
+            <Nav.Link as={Link} to='/addtransaction'>
+              Exp/Inc
+            </Nav.Link>
           </Nav>
           <Nav className='me-right'>
             {/* Dropdown For User Info */}
@@ -43,8 +50,14 @@ const NavigationItem = ({ isLoggedIn, userName }) => {
         <>
           <Nav className='me-right'>
             <Stack direction='horizontal' gap={2}>
-              <Btn variant={'info'} text={'Log In'} size={'sm'} />
-              <Btn variant={'light'} text={'Sign Up'} size={'sm'} />
+              <Btn
+                variant={'info'}
+                text={'Log In'}
+                size={'sm'}
+                as={Link}
+                to='/login'
+              />
+              <Btn variant={'warning'} text={'Sign Up'} size={'sm'} />
             </Stack>
           </Nav>
         </>
