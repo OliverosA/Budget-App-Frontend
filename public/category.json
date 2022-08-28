@@ -1,0 +1,20 @@
+{
+  "category": [
+    {
+      "id": 1,
+      "description": "Travels"
+    },
+    {
+      "id": 2,
+      "description": "Food and Coffe"
+    },
+    {
+      "id": 3,
+      "description": "Transport"
+    },
+    {
+      "id": 4,
+      "description": "New"
+    }
+  ]
+}
