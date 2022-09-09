@@ -1,38 +1,90 @@
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
   min-height: 100vh;
+  text-align: center;
+  width: 100%;
+  background: linear-gradient(#1cb5e0, #000046);
+}
+
+.tableLayout {
+  margin-top: 2%;
+  margin-left: 30%;
+  width: 60%;
+}
+
+.sideMenuContainer {
+  border-radius: 2%;
+  background-color: white;
+  margin-top: 3%;
+  margin-left: 2%;
+  margin-right: 25%;
+  height: 50%;
+}
+
+.sideMenuHeader {
+  width: 23%;
+  height: 50%;
+}
+
+.filters {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: space-around;
+  width: 50%;
+  margin-left: 30%;
+  padding-right: 10%;
 }
 
-.App-link {
-  color: #61dafb;
+.sideMenuItem {
+  width: 23%;
+  height: 20%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.sideMenuTitle {
+  font-size: 25%;
+}
+
+.dateInput {
+  width: 30%;
+}
+
+.LoginFormContainer {
+  background-color: white;
+  border-radius: 5%;
+  width: 70vh;
+  height: 50vh;
+  margin-left: 35%;
+  margin-top: 8%;
+}
+
+.SignUpContainer {
+  background-color: white;
+  border-radius: 5%;
+  width: 70vh;
+  height: 90vh;
+  margin-left: 35%;
+  margin-top: 0.5%;
+}
+
+.SigunUpFormItems {
+  margin-left: 26%;
+  padding-top: 3%;
+  width: 50%;
+  height: 100;
+}
+
+.FormItems {
+  margin-left: 26%;
+  padding-top: 8%;
+  width: 50%;
+  height: 100;
+}
+
+.select {
+  margin-top: 8%;
+  margin-bottom: 5%;
+}
+
+.userImage {
+  width: 30%;
+  height: 30%;
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import Transactions from './Transactions';
 import Category from './Category';
 import Button from 'react-bootstrap/esm/Button';
+import TransactionsTable from './TransactionsTable';
 
 const History = () => {
   const [transaction, setTransaction] = useState([]); // tiene todos
@@ -89,9 +89,9 @@ const History = () => {
         <Category />
       </div>
       {buscar.length === 0 ? (
-        <Transactions transactions={transaction /*tiene todos*/} />
+        <TransactionsTable transactions={transaction /*tiene todos*/} />
       ) : (
-        <Transactions transactions={buscar /*tiene los filtrados*/} />
+        <TransactionsTable transactions={buscar /*tiene los filtrados*/} />
       )}
     </>
   );

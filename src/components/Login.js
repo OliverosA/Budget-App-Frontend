@@ -1,36 +1,29 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import userImage from '../assets/user.png';
+import { Navigate } from 'react-router-dom';
+import { useUserDataContext } from '../context/userContext';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleShowValues = () => {
-    console.log(`El usuario Es: ${username}
-    su password es: ${password}`);
-  };
+  const { isLoggedIn } = useUserDataContext();
 
-  const handleChangeUsername = (event) => {
-    const value = event.target.value;
-    setUsername(value);
-  };
-
-  const handleChangePassword = (event) => {
-    const value = event.target.value;
-    setPassword(value);
-  };
+  if (isLoggedIn) return <Navigate to={'/'} />;
 
   return (
-    <div className='FormContainer'>
+    <div className='LoginFormContainer'>
       <Form className='FormItems'>
+        <img src={userImage} className='userImage' />
         <Form.Group className='my-3'>
           <Form.Label>Email address</Form.Label>
           <Form.Control
             type='text'
-            placeholder='Username'
-            value={username}
-            onChange={handleChangeUsername}
+            placeholder='Email'
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
           />
         </Form.Group>
         <Form.Group className='my-3' controlId='formBasicPassword'>
@@ -39,12 +32,10 @@ const Login = () => {
             type='password'
             placeholder='Password'
             value={password}
-            onChange={handleChangePassword}
+            onChange={(event) => setPassword(event.target.value)}
           />
         </Form.Group>
-        <Button variant='primary' onClick={handleShowValues}>
-          Submit
-        </Button>
+        <Button variant='primary'>Submit</Button>
       </Form>
     </div>
   );

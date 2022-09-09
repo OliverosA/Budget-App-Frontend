@@ -4,7 +4,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Stack from 'react-bootstrap/Stack';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Btn from './Btn';
-import { Link, Outlet } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const NavigationItem = ({ isLoggedIn, userName }) => {
   return (
@@ -57,7 +57,13 @@ const NavigationItem = ({ isLoggedIn, userName }) => {
                 as={Link}
                 to='/login'
               />
-              <Btn variant={'warning'} text={'Sign Up'} size={'sm'} />
+              <Btn
+                variant={'warning'}
+                text={'Sign Up'}
+                size={'sm'}
+                as={Link}
+                to='/signup'
+              />
             </Stack>
           </Nav>
         </>

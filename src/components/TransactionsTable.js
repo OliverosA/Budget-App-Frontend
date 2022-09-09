@@ -2,7 +2,7 @@ import React from 'react';
 import Table from 'react-bootstrap/Table';
 import Btn from './Btn';
 
-const Transactions = (props) => {
+const TransactionsTable = (props) => {
   const getAllTransactions = () => {
     return props?.transactions?.map((item) => (
       <tbody>
@@ -35,4 +35,4 @@ const Transactions = (props) => {
   );
 };
 
-export default Transactions;
+export default TransactionsTable;

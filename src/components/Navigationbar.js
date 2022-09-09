@@ -2,10 +2,12 @@ import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import logo from '../assets/budgetLogo.png';
+import { useUserDataContext } from '../context/userContext';
 import NavigationItem from './NavigationItem';
 import SideBar from './SideBar';
 
-const Navigationbar = ({ isLoggedIn, userName }) => {
+const Navigationbar = () => {
+  const { isLoggedIn } = useUserDataContext();
   return (
     <>
       <Navbar bg='dark' variant='dark'>
