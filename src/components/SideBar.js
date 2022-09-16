@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import Btn from './Btn';
-import Dropdown from 'react-bootstrap/Dropdown';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
+import React, { useEffect, useState } from "react";
+import Dropdown from "react-bootstrap/Dropdown";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import Form from "react-bootstrap/Form";
 
 const currencies = [
-  { id: 1, symbol: '$', name: 'Dolar', acronym: 'USD' },
-  { id: 2, symbol: 'Q', name: 'Quetzal', acronym: 'GTQ' },
-  { id: 3, symbol: '€', name: 'Euro', acronym: 'EUR' },
+  { id: 1, symbol: "$", name: "Dolar", acronym: "USD" },
+  { id: 2, symbol: "Q", name: "Quetzal", acronym: "GTQ" },
+  { id: 3, symbol: "€", name: "Euro", acronym: "EUR" },
 ];
 
 const SideBar = () => {
@@ -19,13 +18,13 @@ const SideBar = () => {
 
   //states for information
   const [account, setAccount] = useState([]);
-  const [bankName, setBankName] = useState('');
-  const [bankAccount, setBankAccount] = useState('');
-  const [currency, setCurrency] = useState('USD');
+  const [bankName, setBankName] = useState("");
+  const [bankAccount, setBankAccount] = useState("");
+  const [currency, setCurrency] = useState("USD");
   const [balance, setBalance] = useState(0);
 
   const getAccounts = async () => {
-    const response = await fetch('accounts.json');
+    const response = await fetch("accounts.json");
     const jsonData = await response.json();
     setAccount(jsonData?.accounts);
   };
@@ -37,9 +36,9 @@ const SideBar = () => {
   const showAccounts = () => {
     return account?.map((item) => (
       <Dropdown.Item
-        as='button'
+        as="button"
         eventKey={item.id}
-        className='sideMenuItem'
+        className="sideMenuItem"
         key={item.id}
       >
         {item.name}
@@ -58,21 +57,21 @@ const SideBar = () => {
             <Form.Group>
               <Form.Label>Bank Name</Form.Label>
               <Form.Control
-                type='text'
-                placeholder='Write your Bank name...'
+                type="text"
+                placeholder="Write your Bank name..."
                 value={bankName}
                 onChange={(event) => setBankName(event.target.value)}
               />
               <Form.Label>Bank Account</Form.Label>
               <Form.Control
-                type='text'
-                placeholder='Write your Bank account...'
+                type="text"
+                placeholder="Write your Bank account..."
                 value={bankAccount}
                 onChange={(event) => setBankAccount(event.target.value)}
               />
               <Form.Label>Currency</Form.Label>
               <Form.Select
-                className='mb-3'
+                className="mb-3"
                 value={currency}
                 onChange={(event) => setCurrency(event.target.value)}
               >
@@ -86,7 +85,7 @@ const SideBar = () => {
               </Form.Select>
               <Form.Label>Initial Balance</Form.Label>
               <Form.Control
-                type='number'
+                type="number"
                 value={balance}
                 onChange={(event) => setBalance(event.target.value)}
               />
@@ -94,10 +93,10 @@ const SideBar = () => {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant='secondary' onClick={handleClose}>
+          <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant='primary' onClick={handleClose}>
+          <Button variant="primary" onClick={handleClose}>
             Add
           </Button>
         </Modal.Footer>
@@ -106,20 +105,20 @@ const SideBar = () => {
   };
 
   return (
-    <>
-      <Dropdown.Menu show className='sideMenuHeader'>
+    <div className="sideMenuContainer">
+      <Dropdown.Menu show className="sideMenuHeader">
         <Dropdown.ItemText>
           <h3>Accounts List</h3>
         </Dropdown.ItemText>
         <Dropdown.Divider />
         {showAccounts()}
         <Dropdown.Divider />
-        <Dropdown.Item as='button' onClick={handleShow}>
+        <Dropdown.Item as="button" onClick={handleShow}>
           Add Bank Account
         </Dropdown.Item>
       </Dropdown.Menu>
       {showModal()}
-    </>
+    </div>
   );
 };
 

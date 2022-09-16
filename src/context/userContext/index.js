@@ -1,11 +1,11 @@
-import React from 'react';
+import React from "react";
 export const UserDataContext = React.createContext();
 
 export const useUserDataContext = () => {
   const context = React.useContext(UserDataContext);
   if (!context) {
     throw new Error(
-      'useUserDataContext cannot be used outside UserDataContext Provider'
+      "useUserDataContext cannot be used outside UserDataContext Provider"
     );
   }
 
@@ -13,7 +13,7 @@ export const useUserDataContext = () => {
 };
 
 export const UserDataContextController = ({ children }) => {
-  const isLoggedIn = true;
+  const isLoggedIn = false;
   return (
     <>
       <UserDataContext.Provider value={{ isLoggedIn }}>

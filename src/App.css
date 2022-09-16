@@ -60,9 +60,8 @@
   background-color: white;
   border-radius: 5%;
   width: 70vh;
-  height: 90vh;
-  margin-left: 35%;
-  margin-top: 0.5%;
+  margin: auto;
+  margin-top: 18vh;
 }
 
 .SigunUpFormItems {
@@ -77,6 +76,10 @@
   padding-top: 8%;
   width: 50%;
   height: 100;
+}
+
+.buttonSubmit {
+  margin-bottom: 5%;
 }
 
 .select {
