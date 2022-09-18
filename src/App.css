@@ -1,7 +1,6 @@
 .App {
   min-height: 100vh;
   text-align: center;
-  width: 100%;
   background: linear-gradient(#1cb5e0, #000046);
 }
 
@@ -52,8 +51,8 @@
   border-radius: 5%;
   width: 70vh;
   height: 50vh;
-  margin-left: 35%;
-  margin-top: 8%;
+  margin: auto;
+  margin-top: 18vh;
 }
 
 .SignUpContainer {
@@ -90,4 +89,8 @@
 .userImage {
   width: 30%;
   height: 30%;
+}
+
+.label {
+  color: white;
 }

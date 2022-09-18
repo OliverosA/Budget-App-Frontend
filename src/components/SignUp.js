@@ -1,12 +1,8 @@
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-
-/*const currencies = [
-  { id: 1, symbol: "$", name: "Dolar", acronym: "USD" },
-  { id: 2, symbol: "Q", name: "Quetzal", acronym: "GTQ" },
-  { id: 3, symbol: "€", name: "Euro", acronym: "EUR" },
-];*/
+import { Navigate } from "react-router-dom";
+import { useUserDataContext } from "../context/userContext";
 
 const SignUp = () => {
   const [values, setValues] = useState({
@@ -14,6 +10,10 @@ const SignUp = () => {
     username: "",
     password: "",
   });
+
+  const { isLoggedIn } = useUserDataContext();
+
+  if (isLoggedIn) return <Navigate to={"/"} />;
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;

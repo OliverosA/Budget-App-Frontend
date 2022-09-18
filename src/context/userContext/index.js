@@ -13,7 +13,7 @@ export const useUserDataContext = () => {
 };
 
 export const UserDataContextController = ({ children }) => {
-  const isLoggedIn = false;
+  const isLoggedIn = true;
   return (
     <>
       <UserDataContext.Provider value={{ isLoggedIn }}>
