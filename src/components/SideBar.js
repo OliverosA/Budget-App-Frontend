@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Dropdown from "react-bootstrap/Dropdown";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
-import Form from "react-bootstrap/Form";
+import { Dropdown, Button, Modal, Form } from "react-bootstrap";
 
 const currencies = [
   { id: 1, symbol: "$", name: "Dolar", acronym: "USD" },

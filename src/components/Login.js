@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
+import { Form, Button } from "react-bootstrap";
 import userImage from "../assets/user.png";
 import { Navigate } from "react-router-dom";
 import { useUserDataContext } from "../context/userContext";

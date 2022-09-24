@@ -1,8 +1,5 @@
 import React from "react";
-import Nav from "react-bootstrap/Nav";
-import Dropdown from "react-bootstrap/Dropdown";
-import Stack from "react-bootstrap/Stack";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
+import { Nav, Dropdown, Stack, ButtonGroup } from "react-bootstrap";
 import Btn from "./Btn";
 import { Link } from "react-router-dom";
 
