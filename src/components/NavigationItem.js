@@ -4,7 +4,7 @@ import Btn from "./Btn";
 import { Link, Navigate } from "react-router-dom";
 import AuthContext from "../context/auth-context";
 
-const NavigationItem = ({ isLoggedIn, username }) => {
+const NavigationItem = ({ isLoggedIn, username, email }) => {
   const authCtx = useContext(AuthContext);
 
   const HandleLogout = async (e) => {
@@ -39,7 +39,7 @@ const NavigationItem = ({ isLoggedIn, username }) => {
               <Btn
                 variant="success"
                 size="sm"
-                text={username /*props.userName */}
+                text={`${username} ` /*props.userName */}
               />
               <Dropdown.Toggle
                 split
