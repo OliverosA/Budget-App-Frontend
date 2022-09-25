@@ -1,31 +1,35 @@
-import React from 'react';
-import Container from 'react-bootstrap/Container';
-import Navbar from 'react-bootstrap/Navbar';
-import logo from '../assets/budgetLogo.png';
-import { useUserDataContext } from '../context/userContext';
-import NavigationItem from './NavigationItem';
-import SideBar from './SideBar';
+import React, { useContext } from "react";
+import { Container, Navbar } from "react-bootstrap";
+import logo from "../assets/budgetLogo.png";
+import NavigationItem from "./NavigationItem";
+import SideBar from "./SideBar";
+import AuthContext from "../context/auth-context";
 
 const Navigationbar = () => {
-  const { isLoggedIn } = useUserDataContext();
+  const authCtx = useContext(AuthContext);
+
   return (
     <>
-      <Navbar bg='dark' variant='dark'>
+      <Navbar bg="dark" variant="dark">
         <Container>
-          <Navbar.Brand href='#home'>
+          <Navbar.Brand href="#home">
             <img
-              alt=''
+              alt=""
               src={logo}
-              width='30'
-              height='30'
-              className='d-inline-block align-top'
-            />{' '}
+              width="30"
+              height="30"
+              className="d-inline-block align-top"
+            />{" "}
             Budget
           </Navbar.Brand>
-          <NavigationItem isLoggedIn={isLoggedIn} />
+          <NavigationItem
+            isLoggedIn={authCtx.isLoggedIn}
+            username={authCtx.currentUser.username}
+            email={authCtx.currentUser.email}
+          />
         </Container>
       </Navbar>
-      {isLoggedIn ? <SideBar /> : ''}
+      {authCtx.isLoggedIn ? <SideBar /> : ""}
     </>
   );
 };

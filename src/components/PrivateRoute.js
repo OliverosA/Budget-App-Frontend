@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
-import { Navigate, useNavigate, Outlet } from 'react-router-dom';
-import { useUserDataContext } from '../context/userContext';
+import React, { useContext } from "react";
+import { Navigate } from "react-router-dom";
+import AuthContext from "../context/auth-context";
 
 const PrivateRoute = ({ children, ...rest }) => {
-  const { isLoggedIn } = useUserDataContext();
+  const authCtx = useContext(AuthContext);
 
-  if (!isLoggedIn) return <Navigate to={'/login'} replace />;
+  if (authCtx.isLoggedIn) return children;
 
-  return children;
+  return <Navigate to={"/login"} replace />;
 };
 
 export default PrivateRoute;

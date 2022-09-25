@@ -1,14 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { UserDataContextController } from './context/userContext';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <UserDataContextController>
-      <App />
-    </UserDataContextController>
+    <App />
   </React.StrictMode>
 );

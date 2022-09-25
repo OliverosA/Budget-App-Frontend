@@ -1,86 +1,98 @@
-import React, { useState } from 'react';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-
-const currencies = [
-  { id: 1, symbol: '$', name: 'Dolar', acronym: 'USD' },
-  { id: 2, symbol: 'Q', name: 'Quetzal', acronym: 'GTQ' },
-  { id: 3, symbol: '€', name: 'Euro', acronym: 'EUR' },
-];
+import React, { useState, useContext } from "react";
+import { Form, Button } from "react-bootstrap";
+import { Navigate, useNavigate } from "react-router-dom";
+import AuthContext from "../context/auth-context";
 
 const SignUp = () => {
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [bankName, setBankName] = useState('');
-  const [bankAccount, setBankAccount] = useState('');
-  const [currency, setCurrency] = useState('USD');
-  const [balance, setBalance] = useState(0);
+  const [values, setValues] = useState({
+    email: "",
+    username: "",
+    password: "",
+  });
 
-  const handleSubmit = () => {};
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const authCtx = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  if (authCtx.isLoggedIn) return <Navigate to={"/"} replace />;
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setValues({
+      ...values,
+      [name]: value,
+    });
+  };
+
+  const passwordConfirmed = () => {
+    if (values.password === confirmPassword) return true;
+    return false;
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (
+      values.username === "" ||
+      values.email === "" ||
+      values.password === ""
+    ) {
+      return window.alert("All the inputs must be full");
+    }
+
+    if (!passwordConfirmed()) return window.alert("Passwords do not match");
+
+    try {
+      await authCtx.register(values.username, values.email, values.password);
+      window.alert("User Created, Proceeding To Log In");
+      setValues({ email: "", username: "", password: "" });
+      setConfirmPassword("");
+      return navigate("/", { replace: true });
+    } catch (error) {
+      window.alert(error);
+    }
+  };
 
   return (
-    <div className='SignUpContainer'>
-      <Form className='SigunUpFormItems'>
+    <div className="SignUpContainer">
+      <Form className="SigunUpFormItems" onSubmit={handleSubmit}>
         <h2>SignUp</h2>
-        <Form.Group className='my-4'>
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
-            type='email'
-            placeholder='Write your email...'
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-          />
+        <Form.Group className="my-4">
           <Form.Label>Username</Form.Label>
           <Form.Control
-            type='text'
-            placeholder='Write your username...'
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
+            type="text"
+            name="username"
+            placeholder="Write your username..."
+            value={values.username}
+            onChange={handleInputChange}
+          />
+          <Form.Label>Email address</Form.Label>
+          <Form.Control
+            type="email"
+            name="email"
+            placeholder="Write your email..."
+            value={values.email}
+            onChange={handleInputChange}
           />
           <Form.Label>Password</Form.Label>
           <Form.Control
-            type='password'
-            placeholder='Set your password...'
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
+            type="password"
+            name="password"
+            placeholder="Set your password..."
+            value={values.password}
+            onChange={handleInputChange}
           />
-          <Form.Label>Bank Name</Form.Label>
+          <Form.Label>Confirm Password</Form.Label>
           <Form.Control
-            type='text'
-            placeholder='Write your Bank name...'
-            value={bankName}
-            onChange={(event) => setBankName(event.target.value)}
-          />
-          <Form.Label>Bank Account</Form.Label>
-          <Form.Control
-            type='text'
-            placeholder='Write your Bank account...'
-            value={bankAccount}
-            onChange={(event) => setBankAccount(event.target.value)}
-          />
-          <Form.Label>Currency</Form.Label>
-          <Form.Select
-            className='mb-3'
-            value={currency}
-            onChange={(event) => setCurrency(event.target.value)}
-          >
-            <option value={currency}>Select a currency...</option>
-            {currencies.map((option) => (
-              <option
-                value={option.acronym}
-                key={option.id}
-              >{`${option.acronym} (${option.symbol})`}</option>
-            ))}
-          </Form.Select>
-          <Form.Label>Initial Balance</Form.Label>
-          <Form.Control
-            type='number'
-            value={balance}
-            onChange={(event) => setBalance(event.target.value)}
+            type="password"
+            name="confirmPassword"
+            placeholder="Set your password..."
+            value={confirmPassword}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+            }}
           />
         </Form.Group>
-        <Button variant='primary' type='submit' onClick={handleSubmit}>
+        <Button variant="primary" type="submit" className="buttonSubmit">
           Submit
         </Button>
       </Form>
