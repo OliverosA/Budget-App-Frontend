@@ -11,7 +11,20 @@ const AuthProvider = (props) => {
   const [loadingUserInfo, setLoadingUserInfo] = useState(true);
   const [isLoggedIn, setLoggedIn] = useState(false);
 
-  const register = (first_name, email, password) => {
+  const register = async (username, email, password) => {
+    try {
+      const body = { username: username, email: email, password: password };
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/register`,
+        body
+      );
+      if (response.status === 200) return response;
+    } catch (error) {
+      return error;
+    }
+  };
+
+  /*const register = (first_name, email, password) => {
     return new Promise(async (resolve, reject) => {
       try {
         const response = await fetch(
@@ -37,11 +50,11 @@ const AuthProvider = (props) => {
         reject(e);
       }
     });
-  };
+  };*/
 
   const login = async (email, password) => {
-    const body = { email: email, password: password };
     try {
+      const body = { email: email, password: password };
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_BASE_URL}/login`,
         body
@@ -92,7 +105,6 @@ const AuthProvider = (props) => {
       setLoadingUserInfo(false);
     };
     getUserInfo();
-    console.log(`${isLoggedIn} desde el context`);
   }, []);
 
   const authContext = {

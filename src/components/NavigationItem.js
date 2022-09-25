@@ -39,7 +39,7 @@ const NavigationItem = ({ isLoggedIn, username, email }) => {
               <Btn
                 variant="success"
                 size="sm"
-                text={`${username} ` /*props.userName */}
+                text={`${username} - ${email}` /*props.userName */}
               />
               <Dropdown.Toggle
                 split

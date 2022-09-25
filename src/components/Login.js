@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Form, Button } from "react-bootstrap";
 import userImage from "../assets/user.png";
 import { useNavigate, Navigate } from "react-router-dom";
@@ -26,7 +26,7 @@ const Login = () => {
     event.preventDefault();
     if (values.email !== "" && values.password !== "") {
       try {
-        authCtx.login(values.email, values.password);
+        await authCtx.login(values.email, values.password);
         return navigate("/", { replace: true });
       } catch (error) {
         console.log(error);
