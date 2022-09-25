@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Navigate } from "react-router-dom";
-import { useUserDataContext } from "../context/userContext";
+import AuthContext from "../context/auth-context";
 
 const SignUp = () => {
   const [values, setValues] = useState({
@@ -9,10 +9,9 @@ const SignUp = () => {
     username: "",
     password: "",
   });
+  const authCtx = useContext(AuthContext);
 
-  const { isLoggedIn } = useUserDataContext();
-
-  if (isLoggedIn) return <Navigate to={"/"} />;
+  if (authCtx.isLoggedIn) return <Navigate to={"/"} replace />;
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;

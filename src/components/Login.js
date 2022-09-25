@@ -1,40 +1,67 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Form, Button } from "react-bootstrap";
 import userImage from "../assets/user.png";
-import { Navigate } from "react-router-dom";
-import { useUserDataContext } from "../context/userContext";
+import { useNavigate, Navigate } from "react-router-dom";
+import AuthContext from "../context/auth-context";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [values, setValues] = useState({
+    email: "",
+    password: "",
+  });
+  const authCtx = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const { isLoggedIn } = useUserDataContext();
+  if (authCtx.isLoggedIn) return <Navigate to={"/"} replace />;
 
-  if (isLoggedIn) return <Navigate to={"/"} />;
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setValues({
+      ...values,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (values.email !== "" && values.password !== "") {
+      try {
+        authCtx.login(values.email, values.password);
+        return navigate("/", { replace: true });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    return window.alert("All the inputs must be full");
+  };
 
   return (
     <div className="LoginFormContainer">
-      <Form className="FormItems">
+      <Form className="FormItems" onSubmit={handleSubmit}>
         <img src={userImage} className="userImage" alt="UserImage" />
         <Form.Group className="my-3">
           <Form.Label>Email address</Form.Label>
           <Form.Control
-            type="text"
-            placeholder="Email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
+            type="email"
+            name="email"
+            placeholder="Write your email..."
+            value={values.email}
+            onChange={handleInputChange}
           />
         </Form.Group>
         <Form.Group className="my-3" controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
+            name="password"
+            placeholder="Set your password..."
+            value={values.password}
+            onChange={handleInputChange}
           />
         </Form.Group>
-        <Button variant="primary">Submit</Button>
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>
       </Form>
     </div>
   );

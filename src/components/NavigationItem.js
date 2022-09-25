@@ -1,9 +1,23 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Nav, Dropdown, Stack, ButtonGroup } from "react-bootstrap";
 import Btn from "./Btn";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import AuthContext from "../context/auth-context";
 
-const NavigationItem = ({ isLoggedIn, userName }) => {
+const NavigationItem = ({ isLoggedIn, username }) => {
+  const authCtx = useContext(AuthContext);
+
+  const HandleLogout = async (e) => {
+    e.preventDefault();
+    try {
+      authCtx.logout();
+      isLoggedIn = !isLoggedIn;
+      return <Navigate to={"/login"} replace />;
+    } catch {
+      console.log("error to logout");
+    }
+  };
+
   return (
     <>
       {isLoggedIn ? (
@@ -25,7 +39,7 @@ const NavigationItem = ({ isLoggedIn, userName }) => {
               <Btn
                 variant="success"
                 size="sm"
-                text={"USERNAME" /*props.userName */}
+                text={username /*props.userName */}
               />
               <Dropdown.Toggle
                 split
@@ -33,7 +47,7 @@ const NavigationItem = ({ isLoggedIn, userName }) => {
                 id="dropdown-split-basic"
               />
               <Dropdown.Menu>
-                <Dropdown.Item href="#/action-3">Log Out</Dropdown.Item>
+                <Dropdown.Item onClick={HandleLogout}>Log Out</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </Nav>

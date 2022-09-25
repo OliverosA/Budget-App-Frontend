@@ -1,12 +1,21 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Container, Navbar } from "react-bootstrap";
 import logo from "../assets/budgetLogo.png";
-import { useUserDataContext } from "../context/userContext";
 import NavigationItem from "./NavigationItem";
 import SideBar from "./SideBar";
+import AuthContext from "../context/auth-context";
 
 const Navigationbar = () => {
-  const { isLoggedIn } = useUserDataContext();
+  const [username, setUsername] = useState("");
+  const authCtx = useContext(AuthContext);
+
+  useEffect(() => {
+    if (authCtx.isLoggedIn) {
+      console.log(authCtx.isLoggedIn);
+      setUsername(authCtx.currentUser.username);
+    }
+  }, []);
+
   return (
     <>
       <Navbar bg="dark" variant="dark">
@@ -21,10 +30,10 @@ const Navigationbar = () => {
             />{" "}
             Budget
           </Navbar.Brand>
-          <NavigationItem isLoggedIn={isLoggedIn} />
+          <NavigationItem isLoggedIn={authCtx.isLoggedIn} username={username} />
         </Container>
       </Navbar>
-      {isLoggedIn ? <SideBar /> : ""}
+      {authCtx.isLoggedIn ? <SideBar /> : ""}
     </>
   );
 };
