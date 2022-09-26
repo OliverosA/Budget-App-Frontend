@@ -8,43 +8,25 @@ import Home from "./components/Home";
 import SignUp from "./components/SignUp";
 import AddAccount from "./components/AddAccount";
 import PrivateRoute from "./components/PrivateRoute";
-import AuthProvider from "./context/auth/AuthProvider";
 
 function App() {
   return (
-    <AuthProvider>
-      <div className="App">
-        <Navigationbar />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <PrivateRoute>
-                <Home />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="history"
-            element={
-              <PrivateRoute>
-                <History />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="addAccount"
-            element={
-              <PrivateRoute>
-                <AddAccount />
-              </PrivateRoute>
-            }
-          />
-          <Route path="login" element={<Login />} />
-          <Route path="signup" element={<SignUp />} />
-        </Routes>
-      </div>
-    </AuthProvider>
+    <div className="App">
+      <Navigationbar />
+      <Routes>
+        <Route path="/" element={<PrivateRoute children={<Home />} />} />
+        <Route
+          path="history"
+          element={<PrivateRoute children={<History />} />}
+        />
+        <Route
+          path="addAccount"
+          element={<PrivateRoute children={<AddAccount />} />}
+        />
+        <Route path="login" element={<Login />} />
+        <Route path="signup" element={<SignUp />} />
+      </Routes>
+    </div>
   );
 }
 

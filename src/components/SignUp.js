@@ -1,7 +1,8 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
-import { Navigate, useNavigate } from "react-router-dom";
-import AuthContext from "../context/auth/auth-context";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import useRequest from "./useRequest";
 
 const SignUp = () => {
   const [values, setValues] = useState({
@@ -11,10 +12,13 @@ const SignUp = () => {
   });
 
   const [confirmPassword, setConfirmPassword] = useState("");
-  const authCtx = useContext(AuthContext);
+  const { isLoggedIn } = useSelector((state) => state.auth);
+  const { register } = useRequest();
   const navigate = useNavigate();
 
-  if (authCtx.isLoggedIn) return <Navigate to={"/"} replace />;
+  useEffect(() => {
+    if (isLoggedIn) navigate("/", { replace: true });
+  });
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -42,11 +46,11 @@ const SignUp = () => {
     if (!passwordConfirmed()) return window.alert("Passwords do not match");
 
     try {
-      await authCtx.register(values.username, values.email, values.password);
+      await register(values.username, values.email, values.password);
       window.alert("User Created, Proceeding To Log In");
       setValues({ email: "", username: "", password: "" });
       setConfirmPassword("");
-      return navigate("/", { replace: true });
+      return navigate("/login", { replace: true });
     } catch (error) {
       window.alert(error);
     }

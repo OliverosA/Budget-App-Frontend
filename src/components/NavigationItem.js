@@ -1,16 +1,16 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Nav, Dropdown, Stack, ButtonGroup } from "react-bootstrap";
 import Btn from "./Btn";
 import { Link, Navigate } from "react-router-dom";
-import AuthContext from "../context/auth/auth-context";
+import useRequest from "./useRequest";
 
 const NavigationItem = ({ isLoggedIn, username, email }) => {
-  const authCtx = useContext(AuthContext);
+  const { logout } = useRequest();
 
   const HandleLogout = async (e) => {
     e.preventDefault();
     try {
-      authCtx.logout();
+      logout();
       isLoggedIn = !isLoggedIn;
       return <Navigate to={"/login"} replace />;
     } catch {

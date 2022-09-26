@@ -3,10 +3,10 @@ import { Container, Navbar } from "react-bootstrap";
 import logo from "../assets/budgetLogo.png";
 import NavigationItem from "./NavigationItem";
 import SideBar from "./SideBar";
-import AuthContext from "../context/auth/auth-context";
+import { useSelector } from "react-redux";
 
 const Navigationbar = () => {
-  const authCtx = useContext(AuthContext);
+  const { isLoggedIn, currentUser } = useSelector((state) => state.auth);
 
   return (
     <>
@@ -23,13 +23,13 @@ const Navigationbar = () => {
             Budget
           </Navbar.Brand>
           <NavigationItem
-            isLoggedIn={authCtx.isLoggedIn}
-            username={authCtx.currentUser.username}
-            email={authCtx.currentUser.email}
+            isLoggedIn={isLoggedIn}
+            username={currentUser.username}
+            email={currentUser.email}
           />
         </Container>
       </Navbar>
-      {authCtx.isLoggedIn ? <SideBar /> : ""}
+      {isLoggedIn ? <SideBar /> : ""}
     </>
   );
 };

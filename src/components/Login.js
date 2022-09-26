@@ -1,18 +1,22 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import userImage from "../assets/user.png";
-import { useNavigate, Navigate } from "react-router-dom";
-import AuthContext from "../context/auth/auth-context";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import useRequest from "./useRequest";
 
 const Login = () => {
   const [values, setValues] = useState({
     email: "",
     password: "",
   });
-  const authCtx = useContext(AuthContext);
   const navigate = useNavigate();
+  const { login } = useRequest();
+  const { isLoggedIn } = useSelector((state) => state.auth);
 
-  if (authCtx.isLoggedIn) return <Navigate to={"/"} replace />;
+  useEffect(() => {
+    if (isLoggedIn) navigate("/", { replace: true });
+  }, []);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -26,7 +30,7 @@ const Login = () => {
     event.preventDefault();
     if (values.email !== "" && values.password !== "") {
       try {
-        await authCtx.login(values.email, values.password);
+        await login(values.email, values.password);
         return navigate("/", { replace: true });
       } catch (error) {
         console.log(error);
@@ -40,7 +44,7 @@ const Login = () => {
       <Form className="FormItems" onSubmit={handleSubmit}>
         <img src={userImage} className="userImage" alt="UserImage" />
         <Form.Group className="my-3">
-          <Form.Label>Email address</Form.Label>
+          <Form.Label>Email</Form.Label>
           <Form.Control
             type="email"
             name="email"
