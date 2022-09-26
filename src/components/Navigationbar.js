@@ -3,7 +3,7 @@ import { Container, Navbar } from "react-bootstrap";
 import logo from "../assets/budgetLogo.png";
 import NavigationItem from "./NavigationItem";
 import SideBar from "./SideBar";
-import AuthContext from "../context/auth-context";
+import AuthContext from "../context/auth/auth-context";
 
 const Navigationbar = () => {
   const authCtx = useContext(AuthContext);

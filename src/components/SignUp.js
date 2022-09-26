@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Navigate, useNavigate } from "react-router-dom";
-import AuthContext from "../context/auth-context";
+import AuthContext from "../context/auth/auth-context";
 
 const SignUp = () => {
   const [values, setValues] = useState({

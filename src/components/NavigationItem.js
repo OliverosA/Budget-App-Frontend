@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Nav, Dropdown, Stack, ButtonGroup } from "react-bootstrap";
 import Btn from "./Btn";
 import { Link, Navigate } from "react-router-dom";
-import AuthContext from "../context/auth-context";
+import AuthContext from "../context/auth/auth-context";
 
 const NavigationItem = ({ isLoggedIn, username, email }) => {
   const authCtx = useContext(AuthContext);

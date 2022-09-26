@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { Form, Button } from "react-bootstrap";
 import userImage from "../assets/user.png";
 import { useNavigate, Navigate } from "react-router-dom";
-import AuthContext from "../context/auth-context";
+import AuthContext from "../context/auth/auth-context";
 
 const Login = () => {
   const [values, setValues] = useState({
