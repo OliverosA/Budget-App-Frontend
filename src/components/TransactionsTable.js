@@ -1,6 +1,5 @@
 import React from "react";
-import Table from "react-bootstrap/Table";
-import Button from "react-bootstrap/Button";
+import { Table, Button } from "react-bootstrap";
 
 const TransactionsTable = (props) => {
   const getAllTransactions = () => {
@@ -20,7 +19,7 @@ const TransactionsTable = (props) => {
   };
 
   return (
-    <div className="tableLayout">
+    <div className="centerItemsLayout">
       <Table striped bordered hover variant="dark">
         <thead>
           <tr key={"headers"}>

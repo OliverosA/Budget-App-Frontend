@@ -6,8 +6,8 @@ import useRequest from "./useRequest";
 
 const SignUp = () => {
   const [values, setValues] = useState({
-    email: "",
     username: "",
+    email: "",
     password: "",
   });
 
@@ -46,7 +46,7 @@ const SignUp = () => {
     if (!passwordConfirmed()) return window.alert("Passwords do not match");
 
     try {
-      await register(values.username, values.email, values.password);
+      await register(values);
       window.alert("User Created, Proceeding To Log In");
       setValues({ email: "", username: "", password: "" });
       setConfirmPassword("");

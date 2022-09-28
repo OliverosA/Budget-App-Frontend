@@ -4,7 +4,7 @@
   background: linear-gradient(#1cb5e0, #000046);
 }
 
-.tableLayout {
+.centerItemsLayout {
   margin-top: 2%;
   margin-left: 30%;
   width: 60%;
@@ -17,17 +17,21 @@
   padding-left: 30%;
 }
 
+.cardsContainer {
+}
+
 .sideMenuContainer {
   border-radius: 2%;
   background-color: white;
-  margin-top: 3%;
   margin-left: 2%;
   margin-right: 25%;
+  width: 30vh;
+  position: fixed;
+  top: 15%;
 }
 
 .sideMenuHeader {
-  width: 15%;
-  height: 35%;
+  width: 100%;
 }
 
 .filters {

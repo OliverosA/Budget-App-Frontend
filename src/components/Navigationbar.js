@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Container, Navbar } from "react-bootstrap";
 import logo from "../assets/budgetLogo.png";
 import NavigationItem from "./NavigationItem";
