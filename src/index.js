@@ -12,12 +12,10 @@ import { Provider } from "react-redux";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
-    <React.StrictMode>
-      <Provider store={store}>
-        <CookiesProvider>
-          <App />
-        </CookiesProvider>
-      </Provider>
-    </React.StrictMode>
+    <Provider store={store}>
+      <CookiesProvider>
+        <App />
+      </CookiesProvider>
+    </Provider>
   </BrowserRouter>
 );

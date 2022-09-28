@@ -1,23 +1,29 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 import { loginUser, logoutUser } from "../store/slices/auth/authSlice";
 import {
   setAllAccounts,
   setSelectedAccount,
   updateAccounts,
   setIncomesSummary,
-  clearIncomesSummary,
+  setExpenseSummary,
+  clearSums,
 } from "../store/slices/bankaccount/bankaccountSlice";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { setAllCurrencies } from "../store/slices/currency/currencySlice";
 
 const useRequest = (props) => {
   const [cookies, setCookie, removeCookie] = useCookies(["auth_token"]);
   const { isLoggedIn } = useSelector((state) => state.auth);
+  const { accounts, incomesSummary, expensesSummary } = useSelector(
+    (state) => state.bankaccount
+  );
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [incomesList, setIncomesList] = useState([]);
 
   const config = {
     headers: { Authorization: `Bearer ${cookies?.auth_token}` },
@@ -94,11 +100,41 @@ const useRequest = (props) => {
         config
       );
       const result = await response.data.data;
+      console.log(result);
       dispatch(setIncomesSummary(result));
     } catch (error) {
       console.log(error);
     }
   };
+
+  const getExpenseSummary = async (bankaccount) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/trasaction/expenseSummary/${bankaccount}`,
+        config
+      );
+      const result = await response.data.data;
+      //dispatch(setExpenseSummary(result));
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  /*const setSummaries = async () => {
+    dispatch(clearSums());
+    if (Object.entries(accounts).length !== 0) {
+      accounts.map((account) => {
+        setIncomesList([...incomesList, getIncomeSummary(account.bankaccount)]);
+        console.log(incomesList);
+        //getExpenseSummary(account.bankaccount);
+      });
+      accounts.map((account) => {
+        //getIncomeSummary(account.bankaccount);
+        //getExpenseSummary(account.bankaccount);
+      });
+    }
+  };*/
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -123,9 +159,11 @@ const useRequest = (props) => {
         }
       }
     };
+    setIncomesList([]);
+    getPersonAccounts();
     getUserInfo();
     getCurrencies();
-    dispatch(clearIncomesSummary());
+    //setSummaries();
   }, []);
 
   return {
@@ -135,6 +173,8 @@ const useRequest = (props) => {
     getPersonAccounts,
     getCurrencies,
     getIncomeSummary,
+    getExpenseSummary,
+    //setSummaries,
   };
 };
 

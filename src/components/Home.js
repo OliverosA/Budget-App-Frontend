@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, Alert } from "react-bootstrap";
 import useRequest from "./useRequest";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { clearSums } from "../store/slices/bankaccount/bankaccountSlice";
 
 const Home = () => {
-  const { getPersonAccounts, getIncomeSummary } = useRequest();
+  const { getPersonAccounts, getIncomeSummary, setSummaries } = useRequest();
   const { accounts, incomesSummary } = useSelector(
     (state) => state.bankaccount
   );
+
   const { currencies } = useSelector((state) => state.currency);
-  const [incomesList, setIncomesList] = useState([]);
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    getPersonAccounts();
     if (Object.entries(accounts).length !== 0) {
-      accounts?.map((account, index) => {
+      dispatch(clearSums());
+      accounts?.map((account) => {
         getIncomeSummary(account.bankaccount);
-        setIncomesList([...incomesList, incomesSummary]);
       });
     }
   }, []);
