@@ -23,6 +23,9 @@ export const bankaccountSlice = createSlice({
     setIncomesSummary: (state, action) => {
       state.incomesSummary = [...state.incomesSummary, action.payload];
     },
+    clearIncomesSummary: (state) => {
+      state.incomesSummary = [];
+    },
   },
 });
 
@@ -31,6 +34,7 @@ export const {
   setSelectedAccount,
   updateAccounts,
   setIncomesSummary,
+  clearIncomesSummary,
 } = bankaccountSlice.actions;
 
 export default bankaccountSlice.reducer;

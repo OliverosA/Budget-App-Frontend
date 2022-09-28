@@ -7,6 +7,7 @@ import {
   setSelectedAccount,
   updateAccounts,
   setIncomesSummary,
+  clearIncomesSummary,
 } from "../store/slices/bankaccount/bankaccountSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -124,6 +125,7 @@ const useRequest = (props) => {
     };
     getUserInfo();
     getCurrencies();
+    dispatch(clearIncomesSummary());
   }, []);
 
   return {
