@@ -1,46 +1,55 @@
 import React, { useEffect, useState } from "react";
 import { Dropdown, Button, Modal, Form } from "react-bootstrap";
-
-const currencies = [
-  { id: 1, symbol: "$", name: "Dolar", acronym: "USD" },
-  { id: 2, symbol: "Q", name: "Quetzal", acronym: "GTQ" },
-  { id: 3, symbol: "€", name: "Euro", acronym: "EUR" },
-];
+import { useDispatch, useSelector } from "react-redux";
+import useRequest from "./useRequest";
 
 const SideBar = () => {
   // states para modal
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
+  const dispatch = useDispatch();
   //states for information
-  const [account, setAccount] = useState([]);
   const [bankName, setBankName] = useState("");
   const [bankAccount, setBankAccount] = useState("");
   const [currency, setCurrency] = useState("USD");
   const [balance, setBalance] = useState(0);
-
-  const getAccounts = async () => {
-    const response = await fetch("accounts.json");
-    const jsonData = await response.json();
-    setAccount(jsonData?.accounts);
-  };
+  const { currencies } = useSelector((state) => state.currency);
+  const { accounts } = useSelector((state) => state.bankaccount);
+  const { isLoggedIn } = useSelector((state) => state.auth);
+  const {
+    getPersonAccounts,
+    getAccountCurrencySymbol,
+    getAccountCurrencyAcronym,
+    getCurrencies,
+  } = useRequest();
 
   useEffect(() => {
-    getAccounts();
+    getPersonAccounts();
   }, []);
 
-  const showAccounts = () => {
-    return account?.map((item) => (
-      <Dropdown.Item
-        as="button"
-        eventKey={item.id}
-        className="sideMenuItem"
-        key={item.id}
-      >
-        {item.name}
-      </Dropdown.Item>
-    ));
+  const showAccountsInfo = () => {
+    return Object.entries(accounts).length === 0 ? (
+      "No accounts registered with this user"
+    ) : (
+      <>
+        {accounts?.map((account) => (
+          <Dropdown.Item
+            as="button"
+            className="sideMenuItem"
+            key={account.bankaccount}
+          >
+            <h5>
+              Account: {account.account_number} <br />
+              Balance:{" "}
+              {`${getAccountCurrencySymbol(account.currency)} ${
+                account.balance
+              }`}
+            </h5>
+          </Dropdown.Item>
+        ))}
+      </>
+    );
   };
 
   const showModal = () => {
@@ -66,20 +75,7 @@ const SideBar = () => {
                 value={bankAccount}
                 onChange={(event) => setBankAccount(event.target.value)}
               />
-              <Form.Label>Currency</Form.Label>
-              <Form.Select
-                className="mb-3"
-                value={currency}
-                onChange={(event) => setCurrency(event.target.value)}
-              >
-                <option value={currency}>Select a currency...</option>
-                {currencies.map((option) => (
-                  <option
-                    value={option.acronym}
-                    key={option.id}
-                  >{`${option.acronym} (${option.symbol})`}</option>
-                ))}
-              </Form.Select>
+
               <Form.Label>Initial Balance</Form.Label>
               <Form.Control
                 type="number"
@@ -108,10 +104,10 @@ const SideBar = () => {
           <h3>Accounts List</h3>
         </Dropdown.ItemText>
         <Dropdown.Divider />
-        {showAccounts()}
+        {showAccountsInfo()}
         <Dropdown.Divider />
         <Dropdown.Item as="button" onClick={handleShow}>
-          Add Bank Account
+          <h5>Add Bank Account</h5>
         </Dropdown.Item>
       </Dropdown.Menu>
       {showModal()}

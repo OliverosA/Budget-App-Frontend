@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { loginUser, logoutUser } from "../store/slices/auth/authSlice";
 import {
   setAllAccounts,
+  setBankIdList,
+  clearBankIdList,
   setSelectedAccount,
   updateAccounts,
   setIncomesSummary,
@@ -17,13 +19,14 @@ import { setAllCurrencies } from "../store/slices/currency/currencySlice";
 
 const useRequest = (props) => {
   const [cookies, setCookie, removeCookie] = useCookies(["auth_token"]);
-  const { isLoggedIn } = useSelector((state) => state.auth);
-  const { accounts, incomesSummary, expensesSummary } = useSelector(
+  const { isLoggedIn, currentUser } = useSelector((state) => state.auth);
+  const { currencies } = useSelector((state) => state.currency);
+  const { accounts, bankIdList, incomesSummary, expensesSummary } = useSelector(
     (state) => state.bankaccount
   );
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [incomesList, setIncomesList] = useState([]);
+  const [requestBody, setRequestBody] = useState({});
 
   const config = {
     headers: { Authorization: `Bearer ${cookies?.auth_token}` },
@@ -93,24 +96,31 @@ const useRequest = (props) => {
     }
   };
 
-  const getIncomeSummary = async (bankaccount) => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_BASE_URL}/trasaction/incomeSummary/${bankaccount}`,
-        config
-      );
-      const result = await response.data.data;
-      console.log(result);
-      dispatch(setIncomesSummary(result));
-    } catch (error) {
-      console.log(error);
+  const getIncomeSummary = async () => {
+    if (Object.entries(bankIdList).length !== 0) {
+      try {
+        const body = { accounts: bankIdList };
+        const response = await axios.post(
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/trasaction/incomeSummary`,
+          body,
+          config
+        );
+        const result = await response.data;
+        console.log(result);
+        //console.log(result);
+        //setIncomesList([...incomesList, result]);
+        //dispatch(setIncomesSummary(result));
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
-  const getExpenseSummary = async (bankaccount) => {
+  const getExpenseSummary = async (bankaccountList) => {
+    console.log(bankaccountList);
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_BASE_URL}/trasaction/expenseSummary/${bankaccount}`,
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/trasaction/expenseSummary`,
         config
       );
       const result = await response.data.data;
@@ -121,20 +131,33 @@ const useRequest = (props) => {
     }
   };
 
-  /*const setSummaries = async () => {
-    dispatch(clearSums());
-    if (Object.entries(accounts).length !== 0) {
-      accounts.map((account) => {
-        setIncomesList([...incomesList, getIncomeSummary(account.bankaccount)]);
-        console.log(incomesList);
-        //getExpenseSummary(account.bankaccount);
-      });
-      accounts.map((account) => {
-        //getIncomeSummary(account.bankaccount);
-        //getExpenseSummary(account.bankaccount);
-      });
+  const getAccountCurrencySymbol = (id_currency) => {
+    if (Object.entries(currencies).length !== 0) {
+      try {
+        const result = currencies?.find(
+          (item) => item.currency === id_currency
+        );
+        return result.symbol;
+      } catch (error) {
+        console.log(error);
+      }
     }
-  };*/
+    return "";
+  };
+
+  const getAccountCurrencyAcronym = (id_currency) => {
+    if (Object.entries(currencies).length !== 0) {
+      try {
+        const result = currencies?.find(
+          (item) => item.currency === id_currency
+        );
+        return result.acronym;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    return "";
+  };
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -144,9 +167,6 @@ const useRequest = (props) => {
         cookies.auth_token !== "undefined"
       ) {
         try {
-          const config = {
-            headers: { Authorization: `Bearer ${cookies.auth_token}` },
-          };
           const response = await axios.get(
             `${process.env.REACT_APP_BACKEND_BASE_URL}/person`,
             config
@@ -159,13 +179,28 @@ const useRequest = (props) => {
         }
       }
     };
-    setIncomesList([]);
     getPersonAccounts();
     getUserInfo();
     getCurrencies();
-    //setSummaries();
   }, []);
 
+  useEffect(() => {
+    const initList = () => {
+      if (Object.entries(accounts).length !== 0) {
+        dispatch(clearBankIdList());
+        accounts.map((account) => {
+          dispatch(setBankIdList(account.bankaccount));
+        });
+      }
+    };
+    initList();
+  }, []);
+
+  /*
+  useEffect(() => {
+    getIncomeSummary();
+  }, [bankIdList]);
+*/
   return {
     register,
     login,
@@ -174,6 +209,8 @@ const useRequest = (props) => {
     getCurrencies,
     getIncomeSummary,
     getExpenseSummary,
+    getAccountCurrencySymbol,
+    getAccountCurrencyAcronym,
     //setSummaries,
   };
 };

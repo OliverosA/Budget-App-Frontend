@@ -2,8 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   accounts: {},
+  bankIdList: [],
   selectedAccount: {},
-  incomesSummary: [],
+  incomesSummary: {},
   expensesSummary: [],
 };
 
@@ -14,6 +15,12 @@ export const bankaccountSlice = createSlice({
     setAllAccounts: (state, action) => {
       state.accounts = action.payload;
     },
+    setBankIdList: (state, action) => {
+      state.bankIdList = [...state.bankIdList, action.payload];
+    },
+    clearBankIdList: (state) => {
+      state.bankIdList = [];
+    },
     setSelectedAccount: (state, action) => {
       state.selectedAccount = action.payload;
     },
@@ -21,7 +28,8 @@ export const bankaccountSlice = createSlice({
       state.accounts = action.payload;
     },
     setIncomesSummary: (state, action) => {
-      state.incomesSummary = [...state.incomesSummary, action.payload];
+      state.incomesSummary = action.payload;
+      console.log(action.payload);
     },
     setExpenseSummary: (state, action) => {
       state.expensesSummary = [...state.expensesSummary, action.payload];
@@ -35,6 +43,8 @@ export const bankaccountSlice = createSlice({
 
 export const {
   setAllAccounts,
+  setBankIdList,
+  clearBankIdList,
   setSelectedAccount,
   updateAccounts,
   setIncomesSummary,

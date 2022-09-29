@@ -17,15 +17,12 @@
   padding-left: 30%;
 }
 
-.cardsContainer {
-}
-
 .sideMenuContainer {
   border-radius: 2%;
   background-color: white;
   margin-left: 2%;
   margin-right: 25%;
-  width: 30vh;
+  width: 40vh;
   position: fixed;
   top: 15%;
 }

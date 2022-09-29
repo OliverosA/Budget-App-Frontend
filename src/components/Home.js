@@ -2,30 +2,26 @@ import React, { useEffect, useState } from "react";
 import { Button, Card, Alert } from "react-bootstrap";
 import useRequest from "./useRequest";
 import { useSelector, useDispatch } from "react-redux";
-import { clearSums } from "../store/slices/bankaccount/bankaccountSlice";
+import {
+  setBankIdList,
+  clearBankIdList,
+  clearSums,
+} from "../store/slices/bankaccount/bankaccountSlice";
 
 const Home = () => {
-  const { getPersonAccounts, getIncomeSummary, setSummaries } = useRequest();
-  const { accounts, incomesSummary } = useSelector(
+  const {
+    getPersonAccounts,
+    getAccountCurrencySymbol,
+    getAccountCurrencyAcronym,
+    getIncomeSummary,
+    setSummaries,
+  } = useRequest();
+  const { accounts, incomesSummary, bankIdList } = useSelector(
     (state) => state.bankaccount
   );
 
   const { currencies } = useSelector((state) => state.currency);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (Object.entries(accounts).length !== 0) {
-      dispatch(clearSums());
-      accounts?.map((account) => {
-        getIncomeSummary(account.bankaccount);
-      });
-    }
-  }, []);
-
-  const getCurrency = (id_currency) => {
-    const result = currencies.find((item) => item.currency === id_currency);
-    return [result.symbol, result.acronym];
-  };
 
   return (
     <div className="centerItemsLayout">
@@ -34,8 +30,8 @@ const Home = () => {
           <Alert.Heading>Welcome To The Budget Management App!</Alert.Heading>
           <h4>
             It's seems that you don't have an account yet. Lets get started to
-            manage your incomesList, expenses and also your transfers beetwen
-            other users accounts! So, Click on the button and create your first
+            manage your incomes, expenses and also your transfers beetwen other
+            users accounts! So, Click on the button and create your first
             account!
           </h4>
           <Button variant="outline-success">Create Account</Button>
@@ -48,15 +44,17 @@ const Home = () => {
                 as={"h3"}
               >{`Account Number: ${item.account_number}`}</Card.Header>
               <Card.Body>
-                <Card.Text as={"h3"}>{`Balance: ${
-                  getCurrency(item.currency)[0]
-                }${item.balance}`}</Card.Text>
-                <Card.Text as={"h3"}>{`Currency: ${
-                  getCurrency(item.currency)[1]
-                }`}</Card.Text>
-                <Card.Text as={"h3"}>{`Total Incomes Summary: ${
-                  getCurrency(item.currency)[0]
-                } ${incomesSummary[index]}`}</Card.Text>
+                <Card.Text as={"h3"}>{`Balance: ${getAccountCurrencySymbol(
+                  item.currency
+                )}${item.balance}`}</Card.Text>
+                <Card.Text as={"h3"}>{`Currency: ${getAccountCurrencyAcronym(
+                  item.currency
+                )}`}</Card.Text>
+                <Card.Text
+                  as={"h3"}
+                >{`Total Incomes Summary: ${getAccountCurrencySymbol(
+                  item.currency
+                )} ${incomesSummary[index]}`}</Card.Text>
                 <Button variant="primary">Create Income</Button>{" "}
                 <Button variant="primary">Create Expense</Button>{" "}
                 <Button variant="primary">Create Transfer</Button>
