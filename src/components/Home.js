@@ -2,12 +2,14 @@ import React from "react";
 import { Button, Card, Alert } from "react-bootstrap";
 import useRequest from "./useRequest";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const { getAccountCurrencySymbol, getAccountCurrencyAcronym } = useRequest();
   const { accounts, incomesSummary, expensesSummary, bankIdList } = useSelector(
     (state) => state.bankaccount
   );
+  const navigate = useNavigate();
 
   return (
     <div className="centerItemsLayout">
@@ -20,7 +22,12 @@ const Home = () => {
             users accounts! So, Click on the button and create your first
             account!
           </h4>
-          <Button variant="outline-success">Create Account</Button>
+          <Button
+            variant="outline-success"
+            onClick={navigate("/addAccount", { replace: true })}
+          >
+            Create Account
+          </Button>
         </Alert>
       ) : (
         accounts.map((item, index) => (

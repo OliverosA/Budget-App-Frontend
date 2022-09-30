@@ -23,8 +23,8 @@ const NavigationItem = ({ isLoggedIn, username, email }) => {
       {isLoggedIn ? (
         <>
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/summary">
-              Summary
+            <Nav.Link as={Link} to="/">
+              Accounts Summary
             </Nav.Link>
             <Nav.Link as={Link} to="/addtransaction">
               Exp/Inc

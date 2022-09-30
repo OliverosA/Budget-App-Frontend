@@ -12,7 +12,7 @@ const Navigationbar = () => {
     <>
       <Navbar bg="dark" variant="dark">
         <Container>
-          <Navbar.Brand href="/">
+          <Navbar.Brand>
             <img
               alt=""
               src={logo}
