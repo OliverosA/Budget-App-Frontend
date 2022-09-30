@@ -1,27 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button, Card, Alert } from "react-bootstrap";
 import useRequest from "./useRequest";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  setBankIdList,
-  clearBankIdList,
-  clearSums,
-} from "../store/slices/bankaccount/bankaccountSlice";
+import { useSelector } from "react-redux";
 
 const Home = () => {
-  const {
-    getPersonAccounts,
-    getAccountCurrencySymbol,
-    getAccountCurrencyAcronym,
-    getIncomeSummary,
-    setSummaries,
-  } = useRequest();
-  const { accounts, incomesSummary, bankIdList } = useSelector(
+  const { getAccountCurrencySymbol, getAccountCurrencyAcronym } = useRequest();
+  const { accounts, incomesSummary, expensesSummary, bankIdList } = useSelector(
     (state) => state.bankaccount
   );
-
-  const { currencies } = useSelector((state) => state.currency);
-  const dispatch = useDispatch();
 
   return (
     <div className="centerItemsLayout">
@@ -50,6 +36,11 @@ const Home = () => {
                 <Card.Text as={"h3"}>{`Currency: ${getAccountCurrencyAcronym(
                   item.currency
                 )}`}</Card.Text>
+                <Card.Text
+                  as={"h3"}
+                >{`Total Expenses Summary: ${getAccountCurrencySymbol(
+                  item.currency
+                )} -${expensesSummary[index]}`}</Card.Text>
                 <Card.Text
                   as={"h3"}
                 >{`Total Incomes Summary: ${getAccountCurrencySymbol(

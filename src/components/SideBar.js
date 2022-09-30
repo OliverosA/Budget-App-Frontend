@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Dropdown, Button, Modal, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import useRequest from "./useRequest";
+import { setSelectedAccount } from "../store/slices/bankaccount/bankaccountSlice";
 
 const SideBar = () => {
   // states para modal
@@ -14,15 +16,9 @@ const SideBar = () => {
   const [bankAccount, setBankAccount] = useState("");
   const [currency, setCurrency] = useState("USD");
   const [balance, setBalance] = useState(0);
-  const { currencies } = useSelector((state) => state.currency);
   const { accounts } = useSelector((state) => state.bankaccount);
-  const { isLoggedIn } = useSelector((state) => state.auth);
-  const {
-    getPersonAccounts,
-    getAccountCurrencySymbol,
-    getAccountCurrencyAcronym,
-    getCurrencies,
-  } = useRequest();
+  const { getPersonAccounts, getAccountCurrencySymbol } = useRequest();
+  const navigate = useNavigate();
 
   useEffect(() => {
     getPersonAccounts();
@@ -35,17 +31,23 @@ const SideBar = () => {
       <>
         {accounts?.map((account) => (
           <Dropdown.Item
-            as="button"
             className="sideMenuItem"
-            key={account.bankaccount}
+            as="button"
+            key={account.account_number}
+            onClick={() => {
+              dispatch(setSelectedAccount(account));
+              navigate("/history", { replace: true });
+            }}
           >
-            <h5>
-              Account: {account.account_number} <br />
-              Balance:{" "}
-              {`${getAccountCurrencySymbol(account.currency)} ${
-                account.balance
-              }`}
-            </h5>
+            <div>
+              <h5>
+                Account: {account.account_number} <br />
+                Balance:{" "}
+                {`${getAccountCurrencySymbol(account.currency)} ${
+                  account.balance
+                }`}
+              </h5>
+            </div>
           </Dropdown.Item>
         ))}
       </>

@@ -23,9 +23,6 @@ const NavigationItem = ({ isLoggedIn, username, email }) => {
       {isLoggedIn ? (
         <>
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/history">
-              History
-            </Nav.Link>
             <Nav.Link as={Link} to="/summary">
               Summary
             </Nav.Link>

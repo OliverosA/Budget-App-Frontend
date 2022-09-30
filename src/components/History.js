@@ -2,12 +2,18 @@ import React, { useEffect, useState } from "react";
 import Category from "./Category";
 import Button from "react-bootstrap/esm/Button";
 import TransactionsTable from "./TransactionsTable";
+import { useSelector } from "react-redux";
 
 const History = () => {
   const [transaction, setTransaction] = useState([]); // tiene todos
   const [search, setsearch] = useState([]); // tiene los filtrados
   const [name, setName] = useState("");
   const [startDate, setStartDate] = useState(/*new Date()*/ "");
+  const { selectedAccount } = useSelector((state) => state.bankaccount);
+
+  useEffect(() => {
+    console.log(selectedAccount);
+  }, [selectedAccount]);
 
   const getTransactions = async () => {
     const response = await fetch("transactions.json");

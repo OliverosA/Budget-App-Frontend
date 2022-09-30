@@ -16,8 +16,9 @@ import {
   clearSums,
 } from "../store/slices/bankaccount/bankaccountSlice";
 import { setAllCurrencies } from "../store/slices/currency/currencySlice";
+import { setAllTrasanctions } from "../store/slices/transaction/transaction";
 
-const useRequest = (props) => {
+const useRequest = () => {
   const [cookies, setCookie, removeCookie] = useCookies(["auth_token"]);
   const { isLoggedIn, currentUser } = useSelector((state) => state.auth);
   const { currencies } = useSelector((state) => state.currency);
@@ -105,29 +106,28 @@ const useRequest = (props) => {
           body,
           config
         );
-        const result = await response.data;
-        console.log(result);
-        //console.log(result);
-        //setIncomesList([...incomesList, result]);
-        //dispatch(setIncomesSummary(result));
+        const result = await response.data.data;
+        dispatch(setIncomesSummary(result));
       } catch (error) {
         console.log(error);
       }
     }
   };
 
-  const getExpenseSummary = async (bankaccountList) => {
-    console.log(bankaccountList);
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_BASE_URL}/trasaction/expenseSummary`,
-        config
-      );
-      const result = await response.data.data;
-      //dispatch(setExpenseSummary(result));
-      return result;
-    } catch (error) {
-      console.log(error);
+  const getExpenseSummary = async () => {
+    if (Object.entries(bankIdList).length !== 0) {
+      try {
+        const body = { accounts: bankIdList };
+        const response = await axios.post(
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/trasaction/expenseSummary`,
+          body,
+          config
+        );
+        const result = await response.data.data;
+        dispatch(setExpenseSummary(result));
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -158,6 +158,14 @@ const useRequest = (props) => {
     }
     return "";
   };
+
+  /*const getTransactions = ({ bankaccount }) => {
+    try {
+      const result = axios.
+    } catch (error) {
+      
+    }
+  };*/
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -196,11 +204,11 @@ const useRequest = (props) => {
     initList();
   }, []);
 
-  /*
   useEffect(() => {
     getIncomeSummary();
+    getExpenseSummary();
   }, [bankIdList]);
-*/
+
   return {
     register,
     login,
