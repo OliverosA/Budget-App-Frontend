@@ -17,6 +17,7 @@ import {
 } from "../store/slices/bankaccount/bankaccountSlice";
 import { setAllCurrencies } from "../store/slices/currency/currencySlice";
 import { setAllTrasanctions } from "../store/slices/transaction/transaction";
+import { setAllCategories } from "../store/slices/category/categorySlice";
 
 const useRequest = () => {
   const [cookies, setCookie, removeCookie] = useCookies(["auth_token"]);
@@ -104,6 +105,36 @@ const useRequest = () => {
       );
       const { data } = response;
       dispatch(setAllAccounts(data.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // **************** CATEGORY METHODS ***************
+  const createCategory = async ({ name, description }) => {
+    try {
+      const body = {
+        name: name,
+        description: description,
+      };
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/category`,
+        body,
+        config
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getCategories = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/category`,
+        config
+      );
+      const { data } = response.data;
+      dispatch(setAllCategories(data));
     } catch (error) {
       console.log(error);
     }
@@ -208,9 +239,7 @@ const useRequest = () => {
         }
       }
     };
-    getPersonAccounts();
     getUserInfo();
-    getCurrencies();
   }, []);
 
   useEffect(() => {
@@ -223,6 +252,9 @@ const useRequest = () => {
       }
     };
     initList();
+    getPersonAccounts();
+    getCategories();
+    getCurrencies();
   }, []);
 
   useEffect(() => {
@@ -236,6 +268,7 @@ const useRequest = () => {
     logout,
     createAccount,
     getPersonAccounts,
+    createCategory,
     getCurrencies,
     getAccountCurrencySymbol,
     getAccountCurrencyAcronym,

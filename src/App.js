@@ -7,6 +7,7 @@ import Login from "./components/Login";
 import Home from "./components/Home";
 import SignUp from "./components/SignUp";
 import AddAccount from "./components/AddAccount";
+import AddCategory from "./components/AddCategory";
 import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
@@ -22,6 +23,10 @@ function App() {
         <Route
           path="addAccount"
           element={<PrivateRoute children={<AddAccount />} />}
+        />
+        <Route
+          path="addCategory"
+          element={<PrivateRoute children={<AddCategory />} />}
         />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<SignUp />} />

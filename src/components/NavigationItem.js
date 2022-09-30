@@ -26,6 +26,12 @@ const NavigationItem = ({ isLoggedIn, username, email }) => {
             <Nav.Link as={Link} to="/">
               Accounts Summary
             </Nav.Link>
+            <Nav.Link as={Link} to="/addAccount">
+              Create Account
+            </Nav.Link>
+            <Nav.Link as={Link} to="/addCategory">
+              Create Category
+            </Nav.Link>
             <Nav.Link as={Link} to="/addtransaction">
               Exp/Inc
             </Nav.Link>

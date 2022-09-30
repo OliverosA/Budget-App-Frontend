@@ -57,7 +57,7 @@ const SideBar = () => {
         <Dropdown.Item
           as="button"
           onClick={() => {
-            navigate(navigate("/addAccount", { replace: true }));
+            navigate("/addAccount", { replace: true });
           }}
         >
           <h5>Add Bank Account</h5>
