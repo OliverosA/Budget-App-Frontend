@@ -6,23 +6,53 @@ import useRequest from "./useRequest";
 import { setSelectedAccount } from "../store/slices/bankaccount/bankaccountSlice";
 
 const SideBar = () => {
-  // states para modal
+  // states for modal
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const dispatch = useDispatch();
+
   //states for information
-  const [bankName, setBankName] = useState("");
-  const [bankAccount, setBankAccount] = useState("");
-  const [currency, setCurrency] = useState("USD");
-  const [balance, setBalance] = useState(0);
+  const [formValues, setFormValues] = useState({
+    account_number: "",
+    balance: 0,
+    currency: 0,
+  });
   const { accounts } = useSelector((state) => state.bankaccount);
-  const { getPersonAccounts, getAccountCurrencySymbol } = useRequest();
+  const { currencies } = useSelector((state) => state.currency);
+  const { getPersonAccounts, createAccount, getAccountCurrencySymbol } =
+    useRequest();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
     getPersonAccounts();
   }, []);
+
+  const handleFormChange = (event) => {
+    const { name, value } = event.target;
+    setFormValues({
+      ...formValues,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (
+      formValues.balance !== 0 &&
+      formValues.account_number !== "" &&
+      formValues.currency !== 0
+    ) {
+      try {
+        await createAccount(formValues);
+        setFormValues({ account_number: "", balance: 0, currency: 0 });
+        return window.alert("Bank Account Created!");
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    return window.alert("All fields must be filled");
+  };
 
   const showAccountsInfo = () => {
     return Object.entries(accounts).length === 0 ? (
@@ -56,34 +86,49 @@ const SideBar = () => {
 
   const showModal = () => {
     return (
-      <Modal show={show} onHide={handleClose}>
+      <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Add Bank Account</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group>
-              <Form.Label>Bank Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Write your Bank name..."
-                value={bankName}
-                onChange={(event) => setBankName(event.target.value)}
-              />
               <Form.Label>Bank Account</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Write your Bank account..."
-                value={bankAccount}
-                onChange={(event) => setBankAccount(event.target.value)}
+                value={formValues.account_number}
+                name="account_number"
+                onChange={handleFormChange}
               />
-
               <Form.Label>Initial Balance</Form.Label>
               <Form.Control
                 type="number"
-                value={balance}
-                onChange={(event) => setBalance(event.target.value)}
+                value={formValues.balance}
+                name="balance"
+                onChange={handleFormChange}
               />
+              <Form.Label>Currency</Form.Label>
+              <Form.Select
+                className="mb-3"
+                name="currency"
+                onChange={handleFormChange}
+              >
+                <option>Select a currency...</option>
+                {Object.entries(currencies).length !== 0
+                  ? currencies.map((option) => (
+                      <option
+                        key={`${option.currency}-${option.symbol}`}
+                        value={option.currency}
+                      >{`${option.acronym} (${option.symbol})`}</option>
+                    ))
+                  : ""}
+              </Form.Select>
             </Form.Group>
           </Form>
         </Modal.Body>
@@ -91,7 +136,7 @@ const SideBar = () => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          <Button variant="primary" type="submit" onClick={handleSubmit}>
             Add
           </Button>
         </Modal.Footer>

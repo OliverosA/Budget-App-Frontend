@@ -33,6 +33,8 @@ const useRequest = () => {
     headers: { Authorization: `Bearer ${cookies?.auth_token}` },
   };
 
+  // **************** AUTH METHODS ****************
+
   const register = async ({ username, email, password }) => {
     try {
       const body = { username, email, password };
@@ -71,6 +73,29 @@ const useRequest = () => {
     });
   };
 
+  // ****************  BANKACCOUNTS METHODS  ****************
+
+  const createAccount = async ({ account_number, balance, currency }) => {
+    try {
+      const body = {
+        account_number: Number(account_number),
+        balance: balance,
+        currency: currency,
+      };
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/bankaccount`,
+        body,
+        config
+      );
+      //update the accounts
+      getPersonAccounts();
+      getIncomeSummary();
+      getExpenseSummary();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const getPersonAccounts = async () => {
     try {
       const response = await axios.get(
@@ -84,6 +109,8 @@ const useRequest = () => {
     }
   };
 
+  // **************** CURRENCY METHODS ****************
+
   const getCurrencies = async () => {
     try {
       const response = await axios.get(
@@ -96,6 +123,36 @@ const useRequest = () => {
       console.log(error);
     }
   };
+
+  const getAccountCurrencySymbol = (id_currency) => {
+    if (Object.entries(currencies).length !== 0) {
+      try {
+        const result = currencies?.find(
+          (item) => item.currency === id_currency
+        );
+        return result.symbol;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    return "";
+  };
+
+  const getAccountCurrencyAcronym = (id_currency) => {
+    if (Object.entries(currencies).length !== 0) {
+      try {
+        const result = currencies?.find(
+          (item) => item.currency === id_currency
+        );
+        return result.acronym;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    return "";
+  };
+
+  // **************** TRANSACTION METHODS ****************
 
   const getIncomeSummary = async () => {
     if (Object.entries(bankIdList).length !== 0) {
@@ -130,42 +187,6 @@ const useRequest = () => {
       }
     }
   };
-
-  const getAccountCurrencySymbol = (id_currency) => {
-    if (Object.entries(currencies).length !== 0) {
-      try {
-        const result = currencies?.find(
-          (item) => item.currency === id_currency
-        );
-        return result.symbol;
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    return "";
-  };
-
-  const getAccountCurrencyAcronym = (id_currency) => {
-    if (Object.entries(currencies).length !== 0) {
-      try {
-        const result = currencies?.find(
-          (item) => item.currency === id_currency
-        );
-        return result.acronym;
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    return "";
-  };
-
-  /*const getTransactions = ({ bankaccount }) => {
-    try {
-      const result = axios.
-    } catch (error) {
-      
-    }
-  };*/
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -213,13 +234,13 @@ const useRequest = () => {
     register,
     login,
     logout,
+    createAccount,
     getPersonAccounts,
     getCurrencies,
-    getIncomeSummary,
-    getExpenseSummary,
     getAccountCurrencySymbol,
     getAccountCurrencyAcronym,
-    //setSummaries,
+    getIncomeSummary,
+    getExpenseSummary,
   };
 };
 
