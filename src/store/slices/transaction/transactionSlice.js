@@ -6,7 +6,7 @@ const initialState = {
 };
 
 export const trasactionSlice = createSlice({
-  name: "bankaccount",
+  name: "transaction",
   initialState,
   reducers: {
     setAllTransactions: (state, action) => {
