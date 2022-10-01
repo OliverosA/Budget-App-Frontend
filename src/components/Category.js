@@ -1,38 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
+import React, { useEffect, useState } from "react";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedCategory } from "../store/slices/category/categorySlice";
 
 const Category = () => {
-  const [category, setCategory] = useState([]);
-
-  const getCategories = async () => {
-    const response = await fetch('category.json');
-    const jsonData = await response.json();
-    setCategory(jsonData);
-  };
-
-  useEffect(() => {
-    getCategories();
-  }, []);
+  const { categories } = useSelector((state) => state.category);
+  const dispatch = useDispatch();
 
   const showCategories = () => {
-    return category?.category?.map((item) => (
-      <Dropdown.Item key={item.id}>{item.description}</Dropdown.Item>
+    return categories?.map((category) => (
+      <Dropdown.Item
+        key={category.category}
+        onClick={() => dispatch(setSelectedCategory(category))}
+      >
+        {category.name}
+      </Dropdown.Item>
     ));
   };
 
   return (
-    <>
-      <DropdownButton
-        as={ButtonGroup}
-        key={'variant'}
-        variant={'secondary'}
-        title={'Category'}
-      >
-        {showCategories()}
-      </DropdownButton>
-    </>
+    <DropdownButton
+      as={ButtonGroup}
+      key={"variant"}
+      variant={"secondary"}
+      title={"Category"}
+    >
+      {showCategories()}
+    </DropdownButton>
   );
 };
 
