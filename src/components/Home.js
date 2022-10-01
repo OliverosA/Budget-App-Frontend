@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Card, Alert } from "react-bootstrap";
 import useRequest from "./useRequest";
 import { useSelector } from "react-redux";
@@ -9,6 +9,8 @@ const Home = () => {
   const { accounts, incomesSummary, expensesSummary, bankIdList } = useSelector(
     (state) => state.bankaccount
   );
+  const { getPersonAccounts, getIncomeSummary, getExpenseSummary } =
+    useRequest();
   const navigate = useNavigate();
 
   return (
@@ -24,7 +26,7 @@ const Home = () => {
           </h4>
           <Button
             variant="outline-success"
-            onClick={navigate("/addAccount", { replace: true })}
+            onClick={() => navigate("/addAccount", { replace: true })}
           >
             Create Account
           </Button>

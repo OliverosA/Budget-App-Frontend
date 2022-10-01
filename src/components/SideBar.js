@@ -4,9 +4,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import useRequest from "./useRequest";
 import { setSelectedAccount } from "../store/slices/bankaccount/bankaccountSlice";
+import {
+  clearAllTransactions,
+  clearBankAccountTransactions,
+  setAllTransactions,
+  setBankAccountTransactions,
+} from "../store/slices/transaction/transactionSlice";
 
 const SideBar = () => {
   const { accounts } = useSelector((state) => state.bankaccount);
+
   const { getPersonAccounts, getAccountCurrencySymbol } = useRequest();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -27,6 +34,7 @@ const SideBar = () => {
             key={account.account_number}
             onClick={() => {
               dispatch(setSelectedAccount(account));
+              dispatch(clearAllTransactions());
               navigate("/history", { replace: true });
             }}
           >

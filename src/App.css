@@ -17,6 +17,9 @@
   padding-left: 30%;
 }
 
+.tableRow {
+  background-color: lightgreen;
+}
 .sideMenuContainer {
   border-radius: 2%;
   background-color: white;
@@ -34,8 +37,16 @@
 .filters {
   display: flex;
   justify-content: space-around;
-  width: 50%;
-  margin-left: 40%;
+  width: 70%;
+  margin-left: 30%;
+  padding-right: 10%;
+  margin-top: 3%;
+}
+
+.transactionsButtons {
+  display: flex;
+  justify-content: space-around;
+  margin-left: 30%;
   padding-right: 10%;
   margin-top: 3%;
 }
@@ -50,7 +61,7 @@
 }
 
 .dateInput {
-  width: 30%;
+  width: 20%;
 }
 
 .LoginFormContainer {

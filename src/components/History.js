@@ -1,38 +1,45 @@
 import React, { useEffect, useState } from "react";
 import Category from "./Category";
-import Button from "react-bootstrap/esm/Button";
 import TransactionsTable from "./TransactionsTable";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { Alert, Button } from "react-bootstrap";
+import useRequest from "./useRequest";
+import {
+  clearAllTransactions,
+  clearBankAccountTransactions,
+} from "../store/slices/transaction/transactionSlice";
 
 const History = () => {
-  const [transaction, setTransaction] = useState([]); // tiene todos
-  const [search, setsearch] = useState([]); // tiene los filtrados
+  const [filterValues, setFilterValues] = useState({
+    account_number: "",
+    date: "",
+    category: "",
+  });
+  const [transaction, setTransaction] = useState([]); // all the transactions
+  const [search, setsearch] = useState([]); // filtered transactions
   const [name, setName] = useState("");
-  const [startDate, setStartDate] = useState(/*new Date()*/ "");
-  const { selectedAccount } = useSelector((state) => state.bankaccount);
+  const [startDate, setStartDate] = useState("");
+  const { transactions, bankAccountTransactions } = useSelector(
+    (state) => state.transaction
+  );
+  const { getTransactions } = useRequest();
 
-  useEffect(() => {
-    console.log(selectedAccount);
-  }, [selectedAccount]);
-
-  const getTransactions = async () => {
-    const response = await fetch("transactions.json");
-    const jsonData = await response.json();
-    setTransaction(jsonData?.transactions);
-  };
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // search en el state general
-  const searchItems = async (bankName = "", date = "") => {
-    if (bankName !== "") {
-      const filteredTransactions = transaction.filter(
+  const searchItems = async (bankName = "") => {
+    if (filterValues.account_number !== "") {
+      const filteredTransactions = transactions.filter(
         (item) => item.name === bankName
       );
       return setsearch(filteredTransactions); //filtered transactions
     }
 
-    if (date !== "") {
+    if (filterValues.date !== "") {
       const filteredTransactions = transaction.filter(
-        (item) => item.date === date
+        (item) => item.add_date === filterValues.date
       );
       return setsearch(filteredTransactions); //filtered transactions
     }
@@ -55,6 +62,14 @@ const History = () => {
     setName("");
   };
 
+  const handleFormChange = (event) => {
+    const { name, value } = event.target;
+    setFilterValues({
+      ...filterValues,
+      [name]: value,
+    });
+  };
+
   useEffect(() => {
     getTransactions();
   }, []);
@@ -73,31 +88,90 @@ const History = () => {
     return () => clearTimeout(id);
   }, [startDate]);
 
-  return (
+  return transactions === {} ? (
+    <div className="centerItemsLayout">
+      <Alert variant="danger">
+        <Alert.Heading>Select An Account!</Alert.Heading>
+        <h4>
+          Please Select an account from the side menu, if you don't have an
+          account yet, create one doing click on the button below
+        </h4>
+        <Button
+          variant="outline-success"
+          onClick={() => {
+            navigate("/addAccount", { replace: true });
+          }}
+        >
+          Create Account
+        </Button>
+      </Alert>
+    </div>
+  ) : (
     <>
       <div className="filters">
         <input
           className="dateInput"
           type="date"
           id="date"
-          value={startDate}
-          onChange={handleDateChange}
+          placeholder="Search date..."
+          name="date"
+          value={filterValues.date}
+          onChange={handleFormChange}
         />
         <input
-          id="nameInput"
-          placeholder="Search by name"
-          value={name}
-          onChange={handleNameChange}
+          type={"text"}
+          id="account_number"
+          name="account_number"
+          placeholder="Search account number..."
+          value={filterValues.account_number}
+          onChange={handleFormChange}
+          list="optionList"
         />
+        <datalist id="optionList">
+          <option value={"apple"}></option>
+          <option value={"banana"}></option>
+          <option value={"orange"}></option>
+        </datalist>
         <Category />
+        <div>
+          <input
+            type={"text"}
+            className={"form-control"}
+            placeholder="search..."
+            list="optionList"
+          />
+          <datalist id="optionList">
+            <option value={"apple"}></option>
+            <option value={"banana"}></option>
+            <option value={"orange"}></option>
+          </datalist>
+        </div>
+
         <Button variant="warning" onClick={handleClearValues}>
           Clear Values
         </Button>
       </div>
-      {search.length === 0 ? (
-        <TransactionsTable transactions={transaction /*tiene todos*/} />
+      <div className="transactionsButtons">
+        <Button variant="success" onClick={() => getTransactions()}>
+          Show All Transactions
+        </Button>
+        <Button
+          variant="danger"
+          onClick={() => dispatch(clearAllTransactions())}
+        >
+          Clear All Transactions
+        </Button>
+        <Button
+          variant="danger"
+          onClick={() => dispatch(clearBankAccountTransactions())}
+        >
+          Clear Account Transactions
+        </Button>
+      </div>
+      {search.length === 0 && Object.entries(transactions).length !== 0 ? (
+        <TransactionsTable transactions={transactions} />
       ) : (
-        <TransactionsTable transactions={search /*tiene los filtrados*/} />
+        <TransactionsTable transactions={search} />
       )}
     </>
   );

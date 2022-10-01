@@ -16,8 +16,11 @@ import {
   clearSums,
 } from "../store/slices/bankaccount/bankaccountSlice";
 import { setAllCurrencies } from "../store/slices/currency/currencySlice";
-import { setAllTrasanctions } from "../store/slices/transaction/transaction";
 import { setAllCategories } from "../store/slices/category/categorySlice";
+import {
+  setAllTransactions,
+  setBankAccountTransactions,
+} from "../store/slices/transaction/transactionSlice";
 
 const useRequest = () => {
   const [cookies, setCookie, removeCookie] = useCookies(["auth_token"]);
@@ -185,6 +188,19 @@ const useRequest = () => {
 
   // **************** TRANSACTION METHODS ****************
 
+  const getTransactions = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/transaction`,
+        config
+      );
+      const { data } = response.data;
+      dispatch(setAllTransactions(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const getIncomeSummary = async () => {
     if (Object.entries(bankIdList).length !== 0) {
       try {
@@ -240,6 +256,7 @@ const useRequest = () => {
       }
     };
     getUserInfo();
+    getPersonAccounts();
   }, []);
 
   useEffect(() => {
@@ -252,7 +269,6 @@ const useRequest = () => {
       }
     };
     initList();
-    getPersonAccounts();
     getCategories();
     getCurrencies();
   }, []);
@@ -274,6 +290,7 @@ const useRequest = () => {
     getAccountCurrencyAcronym,
     getIncomeSummary,
     getExpenseSummary,
+    getTransactions,
   };
 };
 

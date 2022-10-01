@@ -5,7 +5,7 @@ const initialState = {
   bankAccountTransactions: {},
 };
 
-export const trasactionSlice = createSlice({
+export const transactionSlice = createSlice({
   name: "transaction",
   initialState,
   reducers: {
@@ -15,10 +15,20 @@ export const trasactionSlice = createSlice({
     setBankAccountTransactions: (state, action) => {
       state.bankAccountTransactions = action.payload;
     },
+    clearAllTransactions: (state) => {
+      state.transactions = {};
+    },
+    clearBankAccountTransactions: (state) => {
+      state.bankAccountTransactions = {};
+    },
   },
 });
 
-export const { setAllTransactions, setBankAccountTransactions } =
-  trasactionSlice.actions;
+export const {
+  setAllTransactions,
+  setBankAccountTransactions,
+  clearAllTransactions,
+  clearBankAccountTransactions,
+} = transactionSlice.actions;
 
-export default trasactionSlice.reducer;
+export default transactionSlice.reducer;
