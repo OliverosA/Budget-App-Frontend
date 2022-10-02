@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from "react";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   clearSelectedCategory,
   setSelectedCategory,
 } from "../store/slices/category/categorySlice";
 
-const Category = () => {
+const Category = (props) => {
   const { categories } = useSelector((state) => state.category);
   const dispatch = useDispatch();
 
@@ -23,6 +20,7 @@ const Category = () => {
   return (
     <>
       <input
+        className={props.className}
         type={"text"}
         id="account_number"
         name="account_number"
