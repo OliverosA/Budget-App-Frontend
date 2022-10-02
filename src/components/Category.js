@@ -3,32 +3,43 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedCategory } from "../store/slices/category/categorySlice";
+import {
+  clearSelectedCategory,
+  setSelectedCategory,
+} from "../store/slices/category/categorySlice";
 
 const Category = () => {
   const { categories } = useSelector((state) => state.category);
   const dispatch = useDispatch();
 
-  const showCategories = () => {
-    return categories?.map((category) => (
-      <Dropdown.Item
-        key={category.category}
-        onClick={() => dispatch(setSelectedCategory(category))}
-      >
-        {category.name}
-      </Dropdown.Item>
-    ));
+  const handleChange = (event) => {
+    const category = categories.find(
+      (item) => item.category === Number(event.target.value)
+    );
+    if (category !== undefined) return dispatch(setSelectedCategory(category));
+    return dispatch(clearSelectedCategory());
   };
 
   return (
-    <DropdownButton
-      as={ButtonGroup}
-      key={"variant"}
-      variant={"secondary"}
-      title={"Category"}
-    >
-      {showCategories()}
-    </DropdownButton>
+    <>
+      <input
+        type={"text"}
+        id="account_number"
+        name="account_number"
+        placeholder="Search category..."
+        onChange={handleChange}
+        list="categoriesList"
+      />
+      <datalist id="categoriesList">
+        {Object.entries(categories).length !== 0
+          ? categories.map((category) => (
+              <option key={category.category} value={category.category}>
+                {category.name}
+              </option>
+            ))
+          : ""}
+      </datalist>
+    </>
   );
 };
 
