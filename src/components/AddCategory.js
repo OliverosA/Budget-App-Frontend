@@ -47,7 +47,8 @@ const AddCategory = () => {
           <Form.Label as={"h4"}>Description </Form.Label>
           <Form.Control
             type="text"
-            placeholder="(optional) Write A Description..."
+            as="textArea"
+            placeholder="Write a description (optional) ..."
             value={formValues.description}
             name="description"
             onChange={handleFormChange}
