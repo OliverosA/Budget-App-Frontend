@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -9,29 +9,21 @@ import {
   setAllAccounts,
   setBankIdList,
   clearBankIdList,
-  setSelectedAccount,
-  updateAccounts,
   setIncomesSummary,
   setExpenseSummary,
-  clearSums,
 } from "../store/slices/bankaccount/bankaccountSlice";
 import { setAllCurrencies } from "../store/slices/currency/currencySlice";
 import { setAllCategories } from "../store/slices/category/categorySlice";
-import {
-  setAllTransactions,
-  setBankAccountTransactions,
-} from "../store/slices/transaction/transactionSlice";
+import { setAllTransactions } from "../store/slices/transaction/transactionSlice";
+import { setAllTypes } from "../store/slices/trtype/trtypeSlice";
 
 const useRequest = () => {
   const [cookies, setCookie, removeCookie] = useCookies(["auth_token"]);
-  const { isLoggedIn, currentUser } = useSelector((state) => state.auth);
+  const { isLoggedIn } = useSelector((state) => state.auth);
   const { currencies } = useSelector((state) => state.currency);
-  const { accounts, bankIdList, incomesSummary, expensesSummary } = useSelector(
-    (state) => state.bankaccount
-  );
+  const { accounts, bankIdList } = useSelector((state) => state.bankaccount);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [requestBody, setRequestBody] = useState({});
 
   const config = {
     headers: { Authorization: `Bearer ${cookies?.auth_token}` },
@@ -70,7 +62,7 @@ const useRequest = () => {
   };
 
   const logout = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       dispatch(logoutUser());
       removeCookie("auth_token");
       resolve();
@@ -114,6 +106,7 @@ const useRequest = () => {
   };
 
   // **************** CATEGORY METHODS ***************
+
   const createCategory = async ({ name, description }) => {
     try {
       const body = {
@@ -235,6 +228,19 @@ const useRequest = () => {
     }
   };
 
+  const getTransactionTypes = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/transactiontypes`,
+        config
+      );
+      const { data } = response.data;
+      dispatch(setAllTypes(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const getUserInfo = async () => {
       if (
@@ -291,6 +297,7 @@ const useRequest = () => {
     getIncomeSummary,
     getExpenseSummary,
     getTransactions,
+    getTransactionTypes,
   };
 };
 

@@ -4,6 +4,7 @@ import bankaccount from "./slices/bankaccount/bankaccountSlice";
 import currency from "./slices/currency/currencySlice";
 import transaction from "./slices/transaction/transactionSlice";
 import category from "./slices/category/categorySlice";
+import trtype from "./slices/trtype/trtypeSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     currency,
     transaction,
     category,
+    trtype,
   },
 });
