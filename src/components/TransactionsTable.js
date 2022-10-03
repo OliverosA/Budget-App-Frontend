@@ -1,10 +1,12 @@
 import React from "react";
-import { Table, Button } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import { useSelector } from "react-redux";
+import useRequest from "./useRequest";
 
 const TransactionsTable = ({ transactions }) => {
   const { accounts } = useSelector((state) => state.bankaccount);
   const { categories } = useSelector((state) => state.category);
+  const { getPersonAccounts, getAccountCurrencySymbol } = useRequest();
 
   const getAccountNumber = (bankaccount) => {
     if (Object.entries(accounts).length !== 0) {
@@ -39,7 +41,11 @@ const TransactionsTable = ({ transactions }) => {
             >
               {transaction.trtype === 1 ? "Income" : "Expense"}
             </td>
-            <td>{Number(transaction.amount).toFixed(2)}</td>
+            <td>
+              {`${getAccountCurrencySymbol(transaction.currency)} ${Number(
+                transaction.amount
+              ).toFixed(2)}`}
+            </td>
           </tr>
         ))}
       </tbody>

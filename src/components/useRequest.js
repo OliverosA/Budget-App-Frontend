@@ -248,6 +248,45 @@ const useRequest = () => {
     }
   };
 
+  const CreateTransfer = async ({
+    amount,
+    description,
+    orig_account,
+    dest_account,
+  }) => {
+    try {
+      const body = {
+        amount: Number(amount),
+        description,
+        orig_account,
+        dest_account,
+      };
+      const accountToSearch = {
+        account_number: body.dest_account,
+      };
+      const validateAccount = await axios.post(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/searchBankAccount`,
+        accountToSearch,
+        config
+      );
+      const { data: accountData } = validateAccount.data;
+      if (Object.entries(accountData).length === 0)
+        return "Error: The account does not exist!";
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/transfer`,
+        body,
+        config
+      );
+      const { message } = response.data;
+      await getTransactions();
+      await getPersonAccounts();
+      return message;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const getIncomeSummary = async () => {
     if (Object.entries(bankIdList).length !== 0) {
       try {
@@ -351,6 +390,7 @@ const useRequest = () => {
     getTransactions,
     createIncomeTransaction,
     createExpenseTransaction,
+    CreateTransfer,
     getIncomeSummary,
     getExpenseSummary,
     getTransactionTypes,

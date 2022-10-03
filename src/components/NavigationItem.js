@@ -34,8 +34,11 @@ const NavigationItem = ({ isLoggedIn, username, email }) => {
             <Nav.Link as={Link} to="/addCategory">
               Create Category
             </Nav.Link>
-            <Nav.Link as={Link} to="/addtransaction">
+            <Nav.Link as={Link} to="/createTransaction">
               Exp/Inc
+            </Nav.Link>
+            <Nav.Link as={Link} to="/createTransfer">
+              Tansfer
             </Nav.Link>
           </Nav>
           <Nav className="me-right">

@@ -42,9 +42,9 @@ const SideBar = () => {
               <h5>
                 Account: {account.account_number} <br />
                 Balance:{" "}
-                {`${getAccountCurrencySymbol(account.currency)} ${
+                {`${getAccountCurrencySymbol(account.currency)} ${Number(
                   account.balance
-                }`}
+                ).toFixed(2)}`}
               </h5>
             </div>
           </Dropdown.Item>

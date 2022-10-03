@@ -10,6 +10,7 @@ import AddAccount from "./components/AddAccount";
 import AddCategory from "./components/AddCategory";
 import PrivateRoute from "./components/PrivateRoute";
 import ExpInc from "./components/ExpInc";
+import CreateTransfer from "./components/CreateTransfer";
 
 function App() {
   return (
@@ -30,8 +31,12 @@ function App() {
           element={<PrivateRoute children={<AddCategory />} />}
         />
         <Route
-          path="addTransaction"
+          path="createTransaction"
           element={<PrivateRoute children={<ExpInc />} />}
+        />
+        <Route
+          path="createTransfer"
+          element={<PrivateRoute children={<CreateTransfer />} />}
         />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<SignUp />} />

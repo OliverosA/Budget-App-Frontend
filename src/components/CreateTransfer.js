@@ -1,32 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import useRequest from "./useRequest";
-import Category from "./Category";
-import { clearSelectedCategory } from "../store/slices/category/categorySlice";
 
-const ExpInc = () => {
-  const [transactionValues, setTransactionValues] = useState({
+const CreateTransfer = () => {
+  const [transferValues, setTransferValues] = useState({
     amount: 0,
     description: "",
-    bankaccount: 0,
+    orig_account: "",
+    dest_account: "",
   });
   const [accountBalance, setAccountBalance] = useState("0");
-  const [transactionType, setTransactionType] = useState("");
   const { accounts } = useSelector((state) => state.bankaccount);
-  const { selectedCategory } = useSelector((state) => state.category);
-  const { trtypes } = useSelector((state) => state.trtype);
-  const {
-    getAccountCurrencySymbol,
-    getTransactionTypes,
-    createIncomeTransaction,
-    createExpenseTransaction,
-  } = useRequest();
-  const dispatch = useDispatch();
+  const { getAccountCurrencySymbol, getTransactionTypes, CreateTransfer } =
+    useRequest();
 
   useEffect(() => {
     getTransactionTypes();
-    dispatch(clearSelectedCategory());
   }, []);
 
   const checkBalance = (amount) => {
@@ -38,71 +28,62 @@ const ExpInc = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (
-      Number(transactionValues.amount) >= 1 &&
-      transactionValues.bankaccount !== 0 &&
-      Object.entries(selectedCategory).length !== 0 &&
-      transactionType !== ""
+      Number(transferValues.amount) >= 1 &&
+      transferValues.orig_account !== "" &&
+      transferValues.dest_account !== ""
     ) {
-      if (!checkBalance(Number(transactionValues.amount))) {
+      if (transferValues.orig_account === transferValues.dest_account) {
+        return window.alert("Accounts cannot be the same");
+      }
+      if (!checkBalance(Number(transferValues.amount))) {
         return window.alert(
           "The amount must be less than or equal to the account balance"
         );
       }
-      const body = {
-        ...transactionValues,
-        category: selectedCategory.category,
-      };
-      if (transactionType === "Income") {
-        const response = await createIncomeTransaction(body);
-        window.alert(response);
-      }
-      if (transactionType === "Expense") {
-        const response = await createExpenseTransaction(body);
-        window.alert(response);
-      }
+
+      const response = await CreateTransfer({ ...transferValues });
+
       setAccountBalance("0");
-      return setTransactionValues({
+      setTransferValues({
         amount: 0,
         description: "",
-        bankaccount: 0,
+        orig_account: "",
+        dest_account: "",
       });
+      return window.alert(response);
     }
-    if (Number(transactionValues.amount) <= 0)
-      return window.alert(
-        "The amount must be less than or equal to the account balance"
-      );
+    if (Number(transferValues.amount) < 1)
+      return window.alert("The amount must be higher than 0");
     return window.alert("All fields must be filled");
   };
-
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setTransactionValues({
-      ...transactionValues,
-      [name]: value,
-    });
-  };
-
   const getAccountBalance = (account_number) => {
     if (account_number !== undefined) {
       const account = accounts.find(
         (item) => item.account_number === account_number
       );
       if (account !== undefined) {
-        setAccountBalance(
+        setTransferValues({
+          ...transferValues,
+          ["orig_account"]: account.account_number,
+        });
+        return setAccountBalance(
           `${getAccountCurrencySymbol(account.currency)} ${account.balance}`
         );
-        return setTransactionValues({
-          ...transactionValues,
-          ["bankaccount"]: account.bankaccount,
-        });
       }
     }
-    setTransactionValues({ ...transactionValues, ["bankaccount"]: 0 });
+    setTransferValues({
+      ...transferValues,
+      ["orig_account"]: "",
+    });
     return setAccountBalance(0);
   };
 
-  const handleTransactionTypeChange = (event) => {
-    setTransactionType(event.target.value);
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setTransferValues({
+      ...transferValues,
+      [name]: value,
+    });
   };
 
   return (
@@ -117,7 +98,7 @@ const ExpInc = () => {
             className={"form-control"}
             placeholder="Accounts List..."
             list="accountsList"
-            name="account_number"
+            name="orig_account"
             onChange={(e) => {
               getAccountBalance(e.target.value);
             }}
@@ -141,7 +122,17 @@ const ExpInc = () => {
           <Form.Control
             type="number"
             name="amount"
-            value={transactionValues.amount}
+            value={transferValues.amount}
+            onChange={handleInputChange}
+          />
+        </Form.Group>
+        <Form.Group className="my-1">
+          <Form.Label>Select Destination Account</Form.Label>
+          <Form.Control
+            type="text"
+            name="dest_account"
+            placeholder="Enter destination account..."
+            value={transferValues.dest_account}
             onChange={handleInputChange}
           />
         </Form.Group>
@@ -152,32 +143,9 @@ const ExpInc = () => {
             as="textarea"
             name="description"
             placeholder="Set a description (optional)..."
-            value={transactionValues.description}
+            value={transferValues.description}
             onChange={handleInputChange}
           />
-        </Form.Group>
-        <Form.Group className="my-1">
-          <Form.Label>Category</Form.Label>
-          <Category className="categoryForm" />
-        </Form.Group>
-        <Form.Group className="my-1">
-          <Form.Label>Transaction Type</Form.Label>
-          <input
-            id="transactionTypeInput"
-            type={"text"}
-            className={"form-control"}
-            placeholder="Transaction Type List..."
-            list="typesList"
-            name="transactionType"
-            onChange={handleTransactionTypeChange}
-          />
-          <datalist id="typesList">
-            {Object.entries(trtypes).length !== 0
-              ? trtypes.map((type) => (
-                  <option key={type.trtype} value={type.name}></option>
-                ))
-              : ""}
-          </datalist>
         </Form.Group>
         <Button variant="primary" type="submit" className="my-3">
           Create Transaction
@@ -187,4 +155,4 @@ const ExpInc = () => {
   );
 };
 
-export default ExpInc;
+export default CreateTransfer;
