@@ -1,6 +1,7 @@
 import React from "react";
 import { Table } from "react-bootstrap";
 import { useSelector } from "react-redux";
+import { setSelectedAccount } from "../store/slices/bankaccount/bankaccountSlice";
 import useRequest from "./useRequest";
 
 const TransactionsTable = ({ transactions }) => {
@@ -25,7 +26,7 @@ const TransactionsTable = ({ transactions }) => {
   };
 
   const getAllTransactions = () => {
-    return (
+    return Object.entries(transactions).length !== 0 ? (
       <tbody>
         {transactions?.map((transaction, index) => (
           <tr key={`${transaction.transaction}-${index}`}>
@@ -49,6 +50,8 @@ const TransactionsTable = ({ transactions }) => {
           </tr>
         ))}
       </tbody>
+    ) : (
+      ""
     );
   };
 

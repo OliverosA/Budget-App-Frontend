@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Alert } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import useRequest from "./useRequest";
+import { useNavigate } from "react-router-dom";
 
 const CreateTransfer = () => {
   const [transferValues, setTransferValues] = useState({
@@ -12,8 +13,14 @@ const CreateTransfer = () => {
   });
   const [accountBalance, setAccountBalance] = useState("0");
   const { accounts } = useSelector((state) => state.bankaccount);
+  const { isLoggedIn } = useSelector((state) => state.auth);
   const { getAccountCurrencySymbol, getTransactionTypes, CreateTransfer } =
     useRequest();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoggedIn) navigate("/login", { replace: true });
+  }, []);
 
   useEffect(() => {
     getTransactionTypes();
@@ -86,7 +93,26 @@ const CreateTransfer = () => {
     });
   };
 
-  return (
+  return Object.entries(accounts).length === 0 ? (
+    <div className="centerItemsLayout">
+      <Alert variant="danger">
+        <Alert.Heading>Welcome To The Budget Management App!</Alert.Heading>
+        <h4>
+          It's seems that you don't have an account yet. Lets get started to
+          manage your incomes, expenses and also your transfers beetwen other
+          users accounts! So, Click on the button and create your first account!
+        </h4>
+        <Button
+          variant="outline-success"
+          onClick={() => {
+            navigate("/addAccount", { replace: true });
+          }}
+        >
+          Create Account
+        </Button>
+      </Alert>
+    </div>
+  ) : (
     <div className="transactionContainer">
       <Form className="SigunUpFormItems" onSubmit={handleSubmit}>
         <h2>Create Transaction</h2>

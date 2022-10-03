@@ -17,6 +17,7 @@ const Category = (props) => {
         return result.name;
       }
     }
+    dispatch(clearSelectedCategory());
     return "";
   };
 

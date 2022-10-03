@@ -124,15 +124,17 @@ const useRequest = () => {
   };
 
   const getCategories = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_BASE_URL}/category`,
-        config
-      );
-      const { data } = response.data;
-      dispatch(setAllCategories(data));
-    } catch (error) {
-      console.log(error);
+    if (isLoggedIn) {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/category`,
+          config
+        );
+        const { data } = response.data;
+        dispatch(setAllCategories(data));
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -348,6 +350,7 @@ const useRequest = () => {
           );
           const { data } = response;
           dispatch(loginUser(data.data[0]));
+          getPersonAccounts();
           navigate("/", { replace: true });
         } catch (error) {
           console.log(error);
@@ -355,7 +358,6 @@ const useRequest = () => {
       }
     };
     getUserInfo();
-    getPersonAccounts();
   }, []);
 
   useEffect(() => {
@@ -365,17 +367,28 @@ const useRequest = () => {
         accounts.map((account) => {
           dispatch(setBankIdList(account.bankaccount));
         });
+        if (isLoggedIn) {
+          getCategories();
+          getCurrencies();
+        }
       }
     };
     initList();
-    getCategories();
-    getCurrencies();
   }, []);
 
   useEffect(() => {
-    getIncomeSummary();
-    getExpenseSummary();
+    if (Object.entries(accounts).length !== 0 && isLoggedIn) {
+      getIncomeSummary();
+      getExpenseSummary();
+    }
   }, [bankIdList]);
+
+  useEffect(() => {
+    if (Object.entries(accounts).length !== 0 && isLoggedIn) {
+      getIncomeSummary();
+      getExpenseSummary();
+    }
+  }, []);
 
   return {
     register,

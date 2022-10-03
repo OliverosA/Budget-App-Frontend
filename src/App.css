@@ -45,7 +45,7 @@
 
 .transactionsButtons {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
   margin-left: 30%;
   padding-right: 10%;
   margin-top: 3%;
@@ -60,7 +60,7 @@
   font-size: 25%;
 }
 
-.dateInput {
+.filterInput {
   width: 20%;
 }
 
