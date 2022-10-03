@@ -5,25 +5,23 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Alert, Button } from "react-bootstrap";
 import useRequest from "./useRequest";
-import {
-  clearAllTransactions,
-  clearBankAccountTransactions,
-} from "../store/slices/transaction/transactionSlice";
+import { clearSelectedCategory } from "../store/slices/category/categorySlice";
+import { clearSelectedAccount } from "../store/slices/bankaccount/bankaccountSlice";
 
 const History = () => {
+  const { accounts, selectedAccount } = useSelector(
+    (state) => state.bankaccount
+  );
+  const [disabled, setDisabled] = useState(false);
+  const [search, setSearch] = useState([]); // filtered transactions
+  const { transactions } = useSelector((state) => state.transaction);
+  const { isLoggedIn } = useSelector((state) => state.auth);
+  const { selectedCategory } = useSelector((state) => state.category);
   const [filterValues, setFilterValues] = useState({
     account_number: "",
     date: "",
-    category: "",
+    category: 0,
   });
-  const [transaction, setTransaction] = useState([]); // all the transactions
-  const [search, setsearch] = useState([]); // filtered transactions
-  const [name, setName] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const { transactions, bankAccountTransactions } = useSelector(
-    (state) => state.transaction
-  );
-  const { isLoggedIn } = useSelector((state) => state.auth);
   const { getTransactions } = useRequest();
 
   const navigate = useNavigate();
@@ -33,28 +31,114 @@ const History = () => {
     if (!isLoggedIn) navigate("/login", { replace: true });
   }, []);
 
-  // search en el state general
-  const searchItems = async (bankName = "") => {
+  useEffect(() => {
+    setFilterValues({
+      ...filterValues,
+      ["category"]: selectedCategory.category,
+    });
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    if (
+      Object.entries(selectedAccount).length !== 0 &&
+      Object.entries(transactions).length !== 0
+    ) {
+      const result = transactions.filter(
+        (transaction) => transaction.bankaccount === selectedAccount.bankaccount
+      );
+      if (result !== undefined || Object.entries(result).length !== 0) {
+        setDisabled(true);
+        return setSearch(result);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (
+      Object.entries(selectedAccount).length !== 0 &&
+      Object.entries(transactions).length !== 0
+    ) {
+      const result = transactions.filter(
+        (transaction) => transaction.bankaccount === selectedAccount.bankaccount
+      );
+      if (result !== undefined || Object.entries(result).length !== 0) {
+        setDisabled(true);
+        setSearch(result);
+      }
+    }
+  }, [selectedAccount]);
+
+  const getBankAccount = (account_number) => {
+    if (Object.entries(accounts).length !== 0) {
+      const bankaccount = accounts.find(
+        (account) => account.account_number === account_number
+      );
+      if (bankaccount !== undefined) return bankaccount.bankaccount;
+    }
+    return "";
+  };
+
+  const searchAccountSelected = () => {
+    if (filterValues.date !== "") {
+      const filteredTransactions = search.filter(
+        (transaction) => transaction.add_date === filterValues.date
+      );
+      return setSearch(filteredTransactions); //filtered transactions
+    }
+
+    if (filterValues.category !== 0 && filterValues.category !== undefined) {
+      const filteredTransactions = search.filter(
+        (transaction) => transaction.category === filterValues.category
+      );
+      return setSearch(filteredTransactions);
+    }
+  };
+
+  const searchItems = async () => {
+    if (Object.entries(selectedAccount).length !== 0) {
+      return searchAccountSelected();
+    }
     if (filterValues.account_number !== "") {
       const filteredTransactions = transactions.filter(
-        (item) => item.name === bankName
+        (transaction) =>
+          transaction.bankaccount ===
+          getBankAccount(filterValues.account_number)
       );
-      return setsearch(filteredTransactions); //filtered transactions
+      if (filteredTransactions !== undefined)
+        return setSearch(filteredTransactions); //filtered transactions
     }
 
     if (filterValues.date !== "") {
-      const filteredTransactions = transaction.filter(
-        (item) => item.add_date === filterValues.date
+      const filteredTransactions = transactions.filter(
+        (transaction) => transaction.add_date === filterValues.date
       );
-      return setsearch(filteredTransactions); //filtered transactions
+      if (filteredTransactions !== undefined)
+        return setSearch(filteredTransactions); //filtered transactions
     }
 
-    return setsearch(transaction); //all transactions;
+    if (filterValues.category !== 0 && filterValues.category !== undefined) {
+      const filteredTransactions = transactions.filter(
+        (transaction) => transaction.category === filterValues.category
+      );
+      if (filteredTransactions !== undefined)
+        return setSearch(filteredTransactions); //filtered transactions
+    }
+    return setSearch([]);
   };
 
-  const handleClearValues = () => {
-    setStartDate("");
-    setName("");
+  const clearAccountValue = () => {
+    dispatch(clearSelectedCategory());
+    setFilterValues({
+      ...filterValues,
+      ["account_number"]: "",
+    });
+    getTransactions();
+  };
+
+  const clearDateInput = () => {
+    dispatch(clearSelectedCategory());
+    setFilterValues({ ...filterValues, ["date"]: "" });
+    getTransactions();
   };
 
   const handleFormChange = (event) => {
@@ -65,88 +149,68 @@ const History = () => {
     });
   };
 
+  const handleShowAllClick = () => {
+    setDisabled(false);
+    setSearch([]);
+    dispatch(clearSelectedAccount());
+    dispatch(clearSelectedCategory());
+  };
+
   useEffect(() => {
     getTransactions();
   }, []);
 
-  useEffect(() => {
-    const id = setTimeout(() => {
-      searchItems(name);
-    }, 1500);
-    return () => clearTimeout(id);
-  }, [name]);
-
-  useEffect(() => {
-    const id = setTimeout(() => {
-      searchItems("", startDate);
-    }, 1500);
-    return () => clearTimeout(id);
-  }, [startDate]);
-
-  return transactions === {} ? (
+  return Object.entries(transactions).length === 0 ? (
     <div className="centerItemsLayout">
       <Alert variant="danger">
-        <Alert.Heading>Select An Account!</Alert.Heading>
-        <h4>
-          Please Select an account from the side menu, if you don't have an
-          account yet, create one doing click on the button below
-        </h4>
-        <Button
-          variant="outline-success"
-          onClick={() => {
-            navigate("/addAccount", { replace: true });
-          }}
-        >
-          Create Account
-        </Button>
+        <Alert.Heading>
+          It looks like you don't have any transactions yet.
+        </Alert.Heading>
+        <h4>Make a transaction to view it here</h4>
       </Alert>
     </div>
   ) : (
     <>
       <div className="filters">
         <input
-          className="dateInput"
+          className="filterInput"
           type="date"
           id="date"
           placeholder="Search date..."
           name="date"
           value={filterValues.date}
           onChange={handleFormChange}
+          onClick={clearAccountValue}
         />
         <input
           type={"text"}
-          id="account_number"
+          className="filterInput"
+          placeholder="Accounts List..."
+          list="accountsList"
           name="account_number"
-          placeholder="Search account number..."
-          value={filterValues.account_number}
           onChange={handleFormChange}
-          list="optionList"
+          value={filterValues.account_number}
+          onClick={clearDateInput}
+          disabled={disabled}
         />
-        <datalist id="optionList">
-          <option value={"apple"}></option>
-          <option value={"banana"}></option>
-          <option value={"orange"}></option>
+        <datalist id="accountsList">
+          {Object.entries(accounts).length !== 0
+            ? accounts.map((account) => (
+                <option
+                  key={account.bankaccount}
+                  value={account.account_number}
+                ></option>
+              ))
+            : ""}
         </datalist>
         <Category />
-        <Button variant="warning" onClick={handleClearValues}>
-          Clear Values
+        <Button variant="warning" onClick={searchItems}>
+          Search
         </Button>
       </div>
       <div className="transactionsButtons">
-        <Button variant="success" onClick={() => getTransactions()}>
+        <Button variant="success" onClick={handleShowAllClick}>
           Show All Transactions
-        </Button>
-        <Button
-          variant="danger"
-          onClick={() => dispatch(clearAllTransactions())}
-        >
-          Clear All Transactions
-        </Button>
-        <Button
-          variant="danger"
-          onClick={() => dispatch(clearBankAccountTransactions())}
-        >
-          Clear Account Transactions
         </Button>
       </div>
       {search.length === 0 && Object.entries(transactions).length !== 0 ? (

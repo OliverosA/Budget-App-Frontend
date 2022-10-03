@@ -9,9 +9,14 @@ const Home = () => {
   const { accounts, incomesSummary, expensesSummary, bankIdList } = useSelector(
     (state) => state.bankaccount
   );
+  const { isLoggedIn } = useSelector((state) => state.auth);
   const { getPersonAccounts, getIncomeSummary, getExpenseSummary } =
     useRequest();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoggedIn) navigate("/login", { replace: true });
+  }, []);
 
   return (
     <div className="centerItemsLayout">
@@ -41,7 +46,7 @@ const Home = () => {
               <Card.Body>
                 <Card.Text as={"h3"}>{`Balance: ${getAccountCurrencySymbol(
                   item.currency
-                )}${item.balance}`}</Card.Text>
+                )} ${Number(item.balance).toFixed(2)}`}</Card.Text>
                 <Card.Text as={"h3"}>{`Currency: ${getAccountCurrencyAcronym(
                   item.currency
                 )}`}</Card.Text>
@@ -49,15 +54,26 @@ const Home = () => {
                   as={"h3"}
                 >{`Total Expenses Summary: ${getAccountCurrencySymbol(
                   item.currency
-                )} -${expensesSummary[index]}`}</Card.Text>
+                )} -${Number(expensesSummary[index]).toFixed(2)}`}</Card.Text>
                 <Card.Text
                   as={"h3"}
                 >{`Total Incomes Summary: ${getAccountCurrencySymbol(
                   item.currency
-                )} ${incomesSummary[index]}`}</Card.Text>
-                <Button variant="primary">Create Income</Button>{" "}
-                <Button variant="primary">Create Expense</Button>{" "}
-                <Button variant="primary">Create Transfer</Button>
+                )} ${Number(incomesSummary[index]).toFixed(2)}`}</Card.Text>
+                <Button
+                  variant="primary"
+                  onClick={() =>
+                    navigate("createTransaction", { replace: true })
+                  }
+                >
+                  Add Income/Expense
+                </Button>{" "}
+                <Button
+                  variant="primary"
+                  onClick={() => navigate("createTransfer", { replace: true })}
+                >
+                  Create Transfer
+                </Button>
               </Card.Body>
               <Card.Footer
                 className="text-muted"
