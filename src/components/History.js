@@ -23,10 +23,15 @@ const History = () => {
   const { transactions, bankAccountTransactions } = useSelector(
     (state) => state.transaction
   );
+  const { isLoggedIn } = useSelector((state) => state.auth);
   const { getTransactions } = useRequest();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!isLoggedIn) navigate("/login", { replace: true });
+  }, []);
 
   // search en el state general
   const searchItems = async (bankName = "") => {
@@ -45,16 +50,6 @@ const History = () => {
     }
 
     return setsearch(transaction); //all transactions;
-  };
-
-  const handleNameChange = (event) => {
-    const bankName = event.target.value;
-    setName(bankName);
-  };
-
-  const handleDateChange = (event) => {
-    const date = event.target.value;
-    setStartDate(date);
   };
 
   const handleClearValues = () => {
@@ -133,20 +128,6 @@ const History = () => {
           <option value={"orange"}></option>
         </datalist>
         <Category />
-        <div>
-          <input
-            type={"text"}
-            className={"form-control"}
-            placeholder="search..."
-            list="optionList"
-          />
-          <datalist id="optionList">
-            <option value={"apple"}></option>
-            <option value={"banana"}></option>
-            <option value={"orange"}></option>
-          </datalist>
-        </div>
-
         <Button variant="warning" onClick={handleClearValues}>
           Clear Values
         </Button>

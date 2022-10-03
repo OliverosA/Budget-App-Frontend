@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import useRequest from "./useRequest";
+import { useNavigate } from "react-router-dom";
 
 const AddAccount = () => {
   // states for information
@@ -11,7 +12,13 @@ const AddAccount = () => {
     currency: 0,
   });
   const { currencies } = useSelector((state) => state.currency);
+  const { isLoggedIn } = useSelector((state) => state.auth);
   const { createAccount } = useRequest();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoggedIn) navigate("/login", { replace: true });
+  }, []);
 
   const handleFormChange = (event) => {
     const { name, value } = event.target;

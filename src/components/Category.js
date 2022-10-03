@@ -9,12 +9,15 @@ const Category = (props) => {
   const { categories } = useSelector((state) => state.category);
   const dispatch = useDispatch();
 
-  const handleChange = (event) => {
-    const category = categories.find(
-      (item) => item.category === Number(event.target.value)
-    );
-    if (category !== undefined) return dispatch(setSelectedCategory(category));
-    return dispatch(clearSelectedCategory());
+  const getCategoryName = (name) => {
+    if (name !== undefined) {
+      const result = categories.find((item) => item.name === name);
+      if (result !== undefined) {
+        dispatch(setSelectedCategory(result));
+        return result.name;
+      }
+    }
+    return "";
   };
 
   return (
@@ -22,18 +25,17 @@ const Category = (props) => {
       <input
         className={props.className}
         type={"text"}
-        id="account_number"
         name="account_number"
         placeholder="Search category..."
-        onChange={handleChange}
+        onChange={(e) => {
+          getCategoryName(e.target.value);
+        }}
         list="categoriesList"
       />
       <datalist id="categoriesList">
         {Object.entries(categories).length !== 0
           ? categories.map((category) => (
-              <option key={category.category} value={category.category}>
-                {category.name}
-              </option>
+              <option key={category.category} value={category.name}></option>
             ))
           : ""}
       </datalist>

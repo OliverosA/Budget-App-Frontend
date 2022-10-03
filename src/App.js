@@ -9,6 +9,7 @@ import SignUp from "./components/SignUp";
 import AddAccount from "./components/AddAccount";
 import AddCategory from "./components/AddCategory";
 import PrivateRoute from "./components/PrivateRoute";
+import ExpInc from "./components/ExpInc";
 
 function App() {
   return (
@@ -27,6 +28,10 @@ function App() {
         <Route
           path="addCategory"
           element={<PrivateRoute children={<AddCategory />} />}
+        />
+        <Route
+          path="addTransaction"
+          element={<PrivateRoute children={<ExpInc />} />}
         />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<SignUp />} />

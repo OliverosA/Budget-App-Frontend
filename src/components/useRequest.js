@@ -194,6 +194,60 @@ const useRequest = () => {
     }
   };
 
+  const createIncomeTransaction = async ({
+    amount,
+    description,
+    bankaccount,
+    category,
+  }) => {
+    try {
+      const body = {
+        amount: Number(amount),
+        description,
+        bankaccount,
+        category,
+      };
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/incomeTransaction`,
+        body,
+        config
+      );
+      const { message } = response.data;
+      await getTransactions();
+      await getPersonAccounts();
+      return message;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const createExpenseTransaction = async ({
+    amount,
+    description,
+    bankaccount,
+    category,
+  }) => {
+    try {
+      const body = {
+        amount: Number(amount),
+        description,
+        bankaccount,
+        category,
+      };
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/expenseTransaction`,
+        body,
+        config
+      );
+      const { message } = response.data;
+      await getTransactions();
+      await getPersonAccounts();
+      return message;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const getIncomeSummary = async () => {
     if (Object.entries(bankIdList).length !== 0) {
       try {
@@ -294,9 +348,11 @@ const useRequest = () => {
     getCurrencies,
     getAccountCurrencySymbol,
     getAccountCurrencyAcronym,
+    getTransactions,
+    createIncomeTransaction,
+    createExpenseTransaction,
     getIncomeSummary,
     getExpenseSummary,
-    getTransactions,
     getTransactionTypes,
   };
 };

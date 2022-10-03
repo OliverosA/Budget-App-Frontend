@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import useRequest from "./useRequest";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const AddCategory = () => {
   const [formValues, setFormValues] = useState({
@@ -8,6 +10,12 @@ const AddCategory = () => {
     description: "",
   });
   const { createCategory } = useRequest();
+  const { isLoggedIn } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoggedIn) navigate("/login", { replace: true });
+  }, []);
 
   const handleFormChange = (event) => {
     const { name, value } = event.target;
@@ -47,7 +55,7 @@ const AddCategory = () => {
           <Form.Label as={"h4"}>Description </Form.Label>
           <Form.Control
             type="text"
-            as="textArea"
+            as="textarea"
             placeholder="Write a description (optional) ..."
             value={formValues.description}
             name="description"
