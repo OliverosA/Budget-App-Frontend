@@ -1,37 +1,44 @@
-import React, { useEffect, useState } from 'react';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  clearSelectedCategory,
+  setSelectedCategory,
+} from "../store/slices/category/categorySlice";
 
-const Category = () => {
-  const [category, setCategory] = useState([]);
+const Category = (props) => {
+  const { categories } = useSelector((state) => state.category);
+  const dispatch = useDispatch();
 
-  const getCategories = async () => {
-    const response = await fetch('category.json');
-    const jsonData = await response.json();
-    setCategory(jsonData);
-  };
-
-  useEffect(() => {
-    getCategories();
-  }, []);
-
-  const showCategories = () => {
-    return category?.category?.map((item) => (
-      <Dropdown.Item key={item.id}>{item.description}</Dropdown.Item>
-    ));
+  const getCategoryName = (name) => {
+    if (name !== undefined) {
+      const result = categories.find((item) => item.name === name);
+      if (result !== undefined) {
+        dispatch(setSelectedCategory(result));
+        return result.name;
+      }
+    }
+    return "";
   };
 
   return (
     <>
-      <DropdownButton
-        as={ButtonGroup}
-        key={'variant'}
-        variant={'secondary'}
-        title={'Category'}
-      >
-        {showCategories()}
-      </DropdownButton>
+      <input
+        className={props.className}
+        type={"text"}
+        name="account_number"
+        placeholder="Search category..."
+        onChange={(e) => {
+          getCategoryName(e.target.value);
+        }}
+        list="categoriesList"
+      />
+      <datalist id="categoriesList">
+        {Object.entries(categories).length !== 0
+          ? categories.map((category) => (
+              <option key={category.category} value={category.name}></option>
+            ))
+          : ""}
+      </datalist>
     </>
   );
 };

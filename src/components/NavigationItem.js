@@ -1,6 +1,5 @@
 import React from "react";
-import { Nav, Dropdown, Stack, ButtonGroup } from "react-bootstrap";
-import Btn from "./Btn";
+import { Nav, Dropdown, Stack, ButtonGroup, Button } from "react-bootstrap";
 import { Link, Navigate } from "react-router-dom";
 import useRequest from "./useRequest";
 
@@ -23,21 +22,31 @@ const NavigationItem = ({ isLoggedIn, username, email }) => {
       {isLoggedIn ? (
         <>
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/summary">
-              Summary
+            <Nav.Link as={Link} to="/">
+              Accounts Summary
             </Nav.Link>
-            <Nav.Link as={Link} to="/addtransaction">
+            <Nav.Link as={Link} to="/history">
+              Transactions History
+            </Nav.Link>
+            <Nav.Link as={Link} to="/addAccount">
+              Create Account
+            </Nav.Link>
+            <Nav.Link as={Link} to="/addCategory">
+              Create Category
+            </Nav.Link>
+            <Nav.Link as={Link} to="/createTransaction">
               Exp/Inc
+            </Nav.Link>
+            <Nav.Link as={Link} to="/createTransfer">
+              Tansfer
             </Nav.Link>
           </Nav>
           <Nav className="me-right">
-            {/* Dropdown For User Info */}
             <Dropdown as={ButtonGroup}>
-              <Btn
+              <Button
                 variant="success"
                 size="sm"
-                text={`${username} - ${email}` /*props.userName */}
-              />
+              >{`${username} - ${email}`}</Button>
               <Dropdown.Toggle
                 split
                 variant="success"
@@ -53,20 +62,12 @@ const NavigationItem = ({ isLoggedIn, username, email }) => {
         <>
           <Nav className="me-right">
             <Stack direction="horizontal" gap={2}>
-              <Btn
-                variant={"info"}
-                text={"Log In"}
-                size={"sm"}
-                as={Link}
-                to="/login"
-              />
-              <Btn
-                variant={"warning"}
-                text={"Sign Up"}
-                size={"sm"}
-                as={Link}
-                to="/signup"
-              />
+              <Button variant={"info"} size={"sm"} as={Link} to="/login">
+                Log In
+              </Button>
+              <Button variant={"warning"} size={"sm"} as={Link} to="/signup">
+                Sign Up
+              </Button>
             </Stack>
           </Nav>
         </>

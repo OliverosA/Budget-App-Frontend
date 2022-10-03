@@ -36,7 +36,7 @@ const Login = () => {
         console.log(error);
       }
     }
-    return window.alert("All the inputs must be full");
+    return window.alert("All fields must be filled");
   };
 
   return (

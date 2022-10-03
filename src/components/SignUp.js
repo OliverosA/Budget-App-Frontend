@@ -40,7 +40,7 @@ const SignUp = () => {
       values.email === "" ||
       values.password === ""
     ) {
-      return window.alert("All the inputs must be full");
+      return window.alert("All fields must be filled");
     }
 
     if (!passwordConfirmed()) return window.alert("Passwords do not match");

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -9,29 +9,27 @@ import {
   setAllAccounts,
   setBankIdList,
   clearBankIdList,
-  setSelectedAccount,
-  updateAccounts,
   setIncomesSummary,
   setExpenseSummary,
-  clearSums,
 } from "../store/slices/bankaccount/bankaccountSlice";
 import { setAllCurrencies } from "../store/slices/currency/currencySlice";
-import { setAllTrasanctions } from "../store/slices/transaction/transaction";
+import { setAllCategories } from "../store/slices/category/categorySlice";
+import { setAllTransactions } from "../store/slices/transaction/transactionSlice";
+import { setAllTypes } from "../store/slices/trtype/trtypeSlice";
 
 const useRequest = () => {
   const [cookies, setCookie, removeCookie] = useCookies(["auth_token"]);
-  const { isLoggedIn, currentUser } = useSelector((state) => state.auth);
+  const { isLoggedIn } = useSelector((state) => state.auth);
   const { currencies } = useSelector((state) => state.currency);
-  const { accounts, bankIdList, incomesSummary, expensesSummary } = useSelector(
-    (state) => state.bankaccount
-  );
+  const { accounts, bankIdList } = useSelector((state) => state.bankaccount);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [requestBody, setRequestBody] = useState({});
 
   const config = {
     headers: { Authorization: `Bearer ${cookies?.auth_token}` },
   };
+
+  // **************** AUTH METHODS ****************
 
   const register = async ({ username, email, password }) => {
     try {
@@ -64,11 +62,34 @@ const useRequest = () => {
   };
 
   const logout = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       dispatch(logoutUser());
       removeCookie("auth_token");
       resolve();
     });
+  };
+
+  // ****************  BANKACCOUNTS METHODS  ****************
+
+  const createAccount = async ({ account_number, balance, currency }) => {
+    try {
+      const body = {
+        account_number: Number(account_number),
+        balance: balance,
+        currency: currency,
+      };
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/bankaccount`,
+        body,
+        config
+      );
+      //update the accounts
+      getPersonAccounts();
+      getIncomeSummary();
+      getExpenseSummary();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const getPersonAccounts = async () => {
@@ -84,6 +105,39 @@ const useRequest = () => {
     }
   };
 
+  // **************** CATEGORY METHODS ***************
+
+  const createCategory = async ({ name, description }) => {
+    try {
+      const body = {
+        name: name,
+        description: description,
+      };
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/category`,
+        body,
+        config
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getCategories = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/category`,
+        config
+      );
+      const { data } = response.data;
+      dispatch(setAllCategories(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // **************** CURRENCY METHODS ****************
+
   const getCurrencies = async () => {
     try {
       const response = await axios.get(
@@ -92,6 +146,142 @@ const useRequest = () => {
       );
       const { data } = response;
       dispatch(setAllCurrencies(data.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getAccountCurrencySymbol = (id_currency) => {
+    if (Object.entries(currencies).length !== 0) {
+      try {
+        const result = currencies?.find(
+          (item) => item.currency === id_currency
+        );
+        return result.symbol;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    return "";
+  };
+
+  const getAccountCurrencyAcronym = (id_currency) => {
+    if (Object.entries(currencies).length !== 0) {
+      try {
+        const result = currencies?.find(
+          (item) => item.currency === id_currency
+        );
+        return result.acronym;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    return "";
+  };
+
+  // **************** TRANSACTION METHODS ****************
+
+  const getTransactions = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/transaction`,
+        config
+      );
+      const { data } = response.data;
+      dispatch(setAllTransactions(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const createIncomeTransaction = async ({
+    amount,
+    description,
+    bankaccount,
+    category,
+  }) => {
+    try {
+      const body = {
+        amount: Number(amount),
+        description,
+        bankaccount,
+        category,
+      };
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/incomeTransaction`,
+        body,
+        config
+      );
+      const { message } = response.data;
+      await getTransactions();
+      await getPersonAccounts();
+      return message;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const createExpenseTransaction = async ({
+    amount,
+    description,
+    bankaccount,
+    category,
+  }) => {
+    try {
+      const body = {
+        amount: Number(amount),
+        description,
+        bankaccount,
+        category,
+      };
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/expenseTransaction`,
+        body,
+        config
+      );
+      const { message } = response.data;
+      await getTransactions();
+      await getPersonAccounts();
+      return message;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const CreateTransfer = async ({
+    amount,
+    description,
+    orig_account,
+    dest_account,
+  }) => {
+    try {
+      const body = {
+        amount: Number(amount),
+        description,
+        orig_account,
+        dest_account,
+      };
+      const accountToSearch = {
+        account_number: body.dest_account,
+      };
+      const validateAccount = await axios.post(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/searchBankAccount`,
+        accountToSearch,
+        config
+      );
+      const { data: accountData } = validateAccount.data;
+      if (Object.entries(accountData).length === 0)
+        return "Error: The account does not exist!";
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/transfer`,
+        body,
+        config
+      );
+      const { message } = response.data;
+      await getTransactions();
+      await getPersonAccounts();
+      return message;
     } catch (error) {
       console.log(error);
     }
@@ -131,41 +321,18 @@ const useRequest = () => {
     }
   };
 
-  const getAccountCurrencySymbol = (id_currency) => {
-    if (Object.entries(currencies).length !== 0) {
-      try {
-        const result = currencies?.find(
-          (item) => item.currency === id_currency
-        );
-        return result.symbol;
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    return "";
-  };
-
-  const getAccountCurrencyAcronym = (id_currency) => {
-    if (Object.entries(currencies).length !== 0) {
-      try {
-        const result = currencies?.find(
-          (item) => item.currency === id_currency
-        );
-        return result.acronym;
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    return "";
-  };
-
-  /*const getTransactions = ({ bankaccount }) => {
+  const getTransactionTypes = async () => {
     try {
-      const result = axios.
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/transactiontypes`,
+        config
+      );
+      const { data } = response.data;
+      dispatch(setAllTypes(data));
     } catch (error) {
-      
+      console.log(error);
     }
-  };*/
+  };
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -187,9 +354,8 @@ const useRequest = () => {
         }
       }
     };
-    getPersonAccounts();
     getUserInfo();
-    getCurrencies();
+    getPersonAccounts();
   }, []);
 
   useEffect(() => {
@@ -202,6 +368,8 @@ const useRequest = () => {
       }
     };
     initList();
+    getCategories();
+    getCurrencies();
   }, []);
 
   useEffect(() => {
@@ -213,13 +381,19 @@ const useRequest = () => {
     register,
     login,
     logout,
+    createAccount,
     getPersonAccounts,
+    createCategory,
     getCurrencies,
-    getIncomeSummary,
-    getExpenseSummary,
     getAccountCurrencySymbol,
     getAccountCurrencyAcronym,
-    //setSummaries,
+    getTransactions,
+    createIncomeTransaction,
+    createExpenseTransaction,
+    CreateTransfer,
+    getIncomeSummary,
+    getExpenseSummary,
+    getTransactionTypes,
   };
 };
 
