@@ -13,8 +13,12 @@ const AddAccount = () => {
   });
   const { currencies } = useSelector((state) => state.currency);
   const { isLoggedIn } = useSelector((state) => state.auth);
-  const { createAccount } = useRequest();
+  const { createAccount, getCurrencies } = useRequest();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getCurrencies();
+  }, []);
 
   useEffect(() => {
     if (!isLoggedIn) navigate("/login", { replace: true });

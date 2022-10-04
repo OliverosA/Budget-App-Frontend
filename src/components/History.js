@@ -22,10 +22,15 @@ const History = () => {
     date: "",
     category: 0,
   });
-  const { getTransactions } = useRequest();
+  const { getTransactions, getCurrencies, getCategories } = useRequest();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    getCurrencies();
+    getCategories();
+  }, []);
 
   useEffect(() => {
     if (!isLoggedIn) navigate("/login", { replace: true });

@@ -27,16 +27,16 @@ const AddCategory = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (formValues.name !== "" && formValues.description !== "") {
+    if (formValues.name !== "") {
       try {
         await createCategory(formValues);
         setFormValues({ name: "", description: "" });
-        return window.alert("Bank Account Created!");
+        return window.alert("Category Account Created!");
       } catch (error) {
         console.log(error);
       }
     }
-    return window.alert("All fields must be filled");
+    return window.alert("The Category need a name");
   };
 
   return (

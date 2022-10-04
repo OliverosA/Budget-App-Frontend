@@ -6,16 +6,17 @@ import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const { getAccountCurrencySymbol, getAccountCurrencyAcronym } = useRequest();
-  const { accounts, incomesSummary, expensesSummary, bankIdList } = useSelector(
-    (state) => state.bankaccount
-  );
+  const { accounts, incomesSummary, expensesSummary, getTransactions } =
+    useSelector((state) => state.bankaccount);
   const { isLoggedIn } = useSelector((state) => state.auth);
-  const { getPersonAccounts, getIncomeSummary, getExpenseSummary } =
-    useRequest();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!isLoggedIn) navigate("/login", { replace: true });
+  }, []);
+
+  useEffect(() => {
+    if (Object.entries(accounts).length !== 0) getTransactions();
   }, []);
 
   return (

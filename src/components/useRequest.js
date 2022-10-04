@@ -47,6 +47,7 @@ const useRequest = () => {
   const login = async ({ email, password }) => {
     try {
       const body = { email, password };
+      console.log(body);
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_BASE_URL}/login`,
         body
@@ -362,15 +363,11 @@ const useRequest = () => {
 
   useEffect(() => {
     const initList = () => {
-      if (Object.entries(accounts).length !== 0) {
+      if (Object.entries(accounts).length !== 0 && isLoggedIn) {
         dispatch(clearBankIdList());
         accounts.map((account) => {
           dispatch(setBankIdList(account.bankaccount));
         });
-        if (isLoggedIn) {
-          getCategories();
-          getCurrencies();
-        }
       }
     };
     initList();
@@ -397,6 +394,7 @@ const useRequest = () => {
     createAccount,
     getPersonAccounts,
     createCategory,
+    getCategories,
     getCurrencies,
     getAccountCurrencySymbol,
     getAccountCurrencyAcronym,
