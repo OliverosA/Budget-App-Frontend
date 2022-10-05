@@ -5,17 +5,22 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const { getAccountCurrencySymbol, getAccountCurrencyAcronym } = useRequest();
-  const { accounts, incomesSummary, expensesSummary, bankIdList } = useSelector(
+  const {
+    getAccountCurrencySymbol,
+    getAccountCurrencyAcronym,
+    getCurrencies,
+    getExpenseSummary,
+    getIncomeSummary,
+    getTransactions,
+  } = useRequest();
+  const { accounts, incomesSummary, expensesSummary } = useSelector(
     (state) => state.bankaccount
   );
   const { isLoggedIn } = useSelector((state) => state.auth);
-  const { getPersonAccounts, getIncomeSummary, getExpenseSummary } =
-    useRequest();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLoggedIn) navigate("/login", { replace: true });
+    if (!isLoggedIn) return navigate("/login", { replace: true });
   }, []);
 
   return (

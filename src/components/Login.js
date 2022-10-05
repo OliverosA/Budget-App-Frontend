@@ -30,7 +30,8 @@ const Login = () => {
     event.preventDefault();
     if (values.email !== "" && values.password !== "") {
       try {
-        await login(values);
+        const response = await login(values);
+        if (response !== undefined) window.alert(response);
         return navigate("/", { replace: true });
       } catch (error) {
         console.log(error);

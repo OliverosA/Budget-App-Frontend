@@ -1,13 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   clearSelectedCategory,
   setSelectedCategory,
 } from "../store/slices/category/categorySlice";
+import useRequest from "./useRequest";
 
 const Category = (props) => {
   const { categories } = useSelector((state) => state.category);
   const dispatch = useDispatch();
+  const { getCategories } = useRequest();
+
+  useEffect(() => {
+    getCategories();
+  }, []);
 
   const getCategoryName = (name) => {
     if (name !== undefined) {
