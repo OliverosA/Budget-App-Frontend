@@ -31,7 +31,7 @@ const AddCategory = () => {
       try {
         await createCategory(formValues);
         setFormValues({ name: "", description: "" });
-        return window.alert("Category Account Created!");
+        return window.alert("Category Created!");
       } catch (error) {
         console.log(error);
       }

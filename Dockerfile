@@ -1,13 +1,14 @@
 ## Build
-# docker build -t full-front:0.1.0 .
-
+# docker build -t full-front:0.1.0-nginx-alpine .
+# docker tag full-front:0.1.0-nginx-alpine oliverosa/full-front:0.1.0-nginx-alpine
+# docker push oliverosa/full-front:0.1.0-nginx-alpine
 ## Run
-# docker run -p 3000:3000 -d full-front:0.1.0
+# docker run -p 3000:80 -d full-front:0.1.0-nginx-alpine
 
 ## Entrar al contenedor
 # docker run -it full-front:0.1.0 /bin/bash
 
-FROM node:18.9.0
+FROM node:18.9.0 as compilacion
 
 COPY . /opt/app
 
@@ -19,6 +20,8 @@ RUN npm install
 
 RUN npm run build
 
-RUN npm install -g serve
+FROM nginx:1.22.0-alpine
 
-CMD ["serve", "-s", "build"]
+COPY --from=compilacion /opt/app/build /usr/share/nginx/html
+
+CMD ["nginx", "-g", "daemon off;"]

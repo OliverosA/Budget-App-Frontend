@@ -11,15 +11,20 @@ import {
   clearBankIdList,
   setIncomesSummary,
   setExpenseSummary,
+  clearAll,
 } from "../store/slices/bankaccount/bankaccountSlice";
 import { setAllCurrencies } from "../store/slices/currency/currencySlice";
 import { setAllCategories } from "../store/slices/category/categorySlice";
-import { setAllTransactions } from "../store/slices/transaction/transactionSlice";
+import {
+  clearAllTransactions,
+  clearBankAccountTransactions,
+  setAllTransactions,
+} from "../store/slices/transaction/transactionSlice";
 import { setAllTypes } from "../store/slices/trtype/trtypeSlice";
 
 const useRequest = () => {
   const [cookies, setCookie, removeCookie] = useCookies(["auth_token"]);
-  const { isLoggedIn } = useSelector((state) => state.auth);
+  const { isLoggedIn, currentUser } = useSelector((state) => state.auth);
   const { currencies } = useSelector((state) => state.currency);
   const { accounts, bankIdList } = useSelector((state) => state.bankaccount);
   const dispatch = useDispatch();
@@ -47,7 +52,6 @@ const useRequest = () => {
   const login = async ({ email, password }) => {
     try {
       const body = { email, password };
-      console.log(body);
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_BASE_URL}/login`,
         body
@@ -58,13 +62,17 @@ const useRequest = () => {
       });
       dispatch(loginUser(data.data[0]));
     } catch (error) {
-      console.log(error);
+      //console.error(error);
+      return "Error to login";
     }
   };
 
   const logout = () => {
     return new Promise((resolve) => {
       dispatch(logoutUser());
+      dispatch(clearAll());
+      dispatch(clearAllTransactions());
+      dispatch(clearBankAccountTransactions());
       removeCookie("auth_token");
       resolve();
     });
@@ -276,11 +284,13 @@ const useRequest = () => {
       if (Object.entries(accountData).length === 0)
         return "Error: The account does not exist!";
 
+      console.log(accountData);
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_BASE_URL}/transfer`,
         body,
         config
       );
+      console.log(response);
       const { message } = response.data;
       await getTransactions();
       await getPersonAccounts();
@@ -299,7 +309,7 @@ const useRequest = () => {
           body,
           config
         );
-        const result = await response.data.data;
+        const result = response.data.data;
         dispatch(setIncomesSummary(result));
       } catch (error) {
         console.log(error);
@@ -316,7 +326,7 @@ const useRequest = () => {
           body,
           config
         );
-        const result = await response.data.data;
+        const result = response.data.data;
         dispatch(setExpenseSummary(result));
       } catch (error) {
         console.log(error);
@@ -340,7 +350,7 @@ const useRequest = () => {
   useEffect(() => {
     const getUserInfo = async () => {
       if (
-        !isLoggedIn &&
+        Object.entries(currentUser).length === 0 &&
         cookies.auth_token &&
         cookies.auth_token !== "undefined"
       ) {
@@ -364,27 +374,16 @@ const useRequest = () => {
   useEffect(() => {
     const initList = () => {
       if (Object.entries(accounts).length !== 0 && isLoggedIn) {
+        console.log("hola");
         dispatch(clearBankIdList());
         accounts.map((account) => {
           dispatch(setBankIdList(account.bankaccount));
         });
+        getIncomeSummary();
+        getExpenseSummary();
       }
     };
     initList();
-  }, []);
-
-  useEffect(() => {
-    if (Object.entries(accounts).length !== 0 && isLoggedIn) {
-      getIncomeSummary();
-      getExpenseSummary();
-    }
-  }, [bankIdList]);
-
-  useEffect(() => {
-    if (Object.entries(accounts).length !== 0 && isLoggedIn) {
-      getIncomeSummary();
-      getExpenseSummary();
-    }
   }, []);
 
   return {

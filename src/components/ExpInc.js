@@ -36,10 +36,11 @@ const ExpInc = () => {
     dispatch(clearSelectedCategory());
   }, []);
 
-  const checkBalance = (amount) => {
+  const checkBalance = (amount, type) => {
     const balance = accountBalance.split(" ");
-    if (amount <= Number(balance[1])) return true;
-    return false;
+    console.log(Number(amount), Number(balance[1]));
+    if (Number(amount) > Number(balance[1]) && type === "Expense") return false;
+    return true;
   };
 
   const handleSubmit = async (event) => {
@@ -50,7 +51,7 @@ const ExpInc = () => {
       Object.entries(selectedCategory).length !== 0 &&
       transactionType !== ""
     ) {
-      if (!checkBalance(Number(transactionValues.amount))) {
+      if (!checkBalance(Number(transactionValues.amount), transactionType)) {
         return window.alert(
           "The amount must be less than or equal to the account balance"
         );
@@ -74,10 +75,8 @@ const ExpInc = () => {
         bankaccount: 0,
       });
     }
-    if (Number(transactionValues.amount) <= 0)
-      return window.alert(
-        "The amount must be less than or equal to the account balance"
-      );
+    if (Number(transactionValues.amount) < 1)
+      return window.alert("The amount must be greater than 1");
     return window.alert("All fields must be filled");
   };
 

@@ -60,7 +60,7 @@ const CreateTransfer = () => {
       return window.alert(response);
     }
     if (Number(transferValues.amount) < 1)
-      return window.alert("The amount must be higher than 0");
+      return window.alert("The amount must be greater than 1");
     return window.alert("All fields must be filled");
   };
   const getAccountBalance = (account_number) => {
